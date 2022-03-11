@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.anoc20.minimaxcheckers.GameController">
+   <children>
+      <GridPane fx:id="boardPane" alignment="CENTER" layoutX="140.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="320.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Rectangle fill="#ffedc2" height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+            <Rectangle height="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
