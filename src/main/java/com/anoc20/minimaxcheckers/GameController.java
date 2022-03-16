@@ -12,8 +12,7 @@ import javafx.scene.shape.Rectangle;
 
 public class GameController {
 
-    private boolean playerTurn;
-    private CheckerBoard board = new CheckerBoard();
+    private CheckersGame checkersGame;
 
     @FXML
     private GridPane boardPane;
@@ -22,13 +21,16 @@ public class GameController {
 
     public void initialize() {
         // controller available in initialize method
-        board.placeStartingPieces();
-        drawBoard(board);
+        logTextArea.appendText("Welcome to Minimax Checkers \n");
+        checkersGame = new CheckersGame(true, Mode.MEDIUM);
+        drawBoard(checkersGame.getPlayingBoard());
+        System.out.println(checkersGame.availableMoves(PieceColour.DARK));
+        checkersGame.movePiece(1,2,0,3);
+        drawBoard(checkersGame.getPlayingBoard());
     }
 
     @FXML
     private void drawBoard(CheckerBoard board) {
-        logTextArea.appendText("Welcome to Minimax Checkers \n");
 
         boardPane.setStyle("-fx-padding: 0;" +
                 "-fx-border-style: solid outside;" +
