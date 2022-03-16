@@ -1,19 +1,19 @@
 package com.anoc20.minimaxcheckers;
 
 public class CheckerTile {
-    private boolean isBlack;
+    private Colour colour;
     private CheckerPiece activePiece;
     private int index;
 
-    public CheckerTile(boolean isBlack, int index) {
-        this.isBlack = isBlack;
+    public CheckerTile(Colour colour, int index) {
+        this.colour = colour;
         this.index = index;
     }
 
-    public CheckerTile(boolean isBlack, CheckerPiece activePiece) {
-        this.isBlack = isBlack;
+    public CheckerTile(Colour colour, CheckerPiece activePiece) {
+        this.colour = colour;
         //Ensure only black tiles can hold pieces
-        if(isBlack == true) {
+        if(colour == Colour.BLACK) {
             this.activePiece = activePiece;
         }
         else {
@@ -22,8 +22,8 @@ public class CheckerTile {
         }
     }
 
-    public boolean isBlack() {
-        return isBlack;
+    public Colour getColour() {
+        return colour;
     }
 
     public int getIndex() {
@@ -34,7 +34,23 @@ public class CheckerTile {
         return activePiece;
     }
 
-    public void setActivePiece(CheckerPiece activePiece) {
-        this.activePiece = activePiece;
+    public boolean setActivePiece(CheckerPiece activePiece) {
+        if(colour == Colour.BLACK) {
+            this.activePiece = activePiece;
+            return true;
+        }
+        else {
+            System.err.println("Checker pieces cannot be placed on white tiles");
+            return false;
+        }
     }
+
+    public void removePiece() {
+        this.activePiece = null;
+    }
+}
+
+enum Colour {
+    BLACK,
+    WHITE
 }

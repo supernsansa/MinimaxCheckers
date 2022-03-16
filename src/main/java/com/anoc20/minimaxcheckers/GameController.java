@@ -2,10 +2,8 @@ package com.anoc20.minimaxcheckers;
 
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -31,7 +29,6 @@ public class GameController {
     @FXML
     private void drawBoard(CheckerBoard board) {
         logTextArea.appendText("Welcome to Minimax Checkers \n");
-        logTextArea.appendText("Good luck! \n");
 
         boardPane.setStyle("-fx-padding: 0;" +
                 "-fx-border-style: solid outside;" +
@@ -45,7 +42,7 @@ public class GameController {
         for (int y = 0; y < tiles.length; y++) {
             for (int x = 0; x < tiles.length; x++) {
 
-                if (tiles[x][y].isBlack()) {
+                if (tiles[x][y].getColour() == Colour.BLACK) {
                     Rectangle blackTile = new Rectangle(50,50);
                     blackTile.setFill(Color.BLACK);
                     boardPane.add(blackTile,x,y);
@@ -54,7 +51,7 @@ public class GameController {
 
                     if (tiles[x][y].getActivePiece() != null) {
                         //If piece is dark
-                        if (tiles[x][y].getActivePiece().isDark()) {
+                        if (tiles[x][y].getActivePiece().getPieceColour() == PieceColour.DARK) {
                             if (tiles[x][y].getActivePiece().isKing()) {
                                 Circle checkerPiece = new Circle(x, y, 21);
                                 checkerPiece.setFill(Color.RED);
@@ -108,4 +105,18 @@ public class GameController {
             }
         }
     }
+
+    public void clickOnGrid(javafx.scene.input.MouseEvent event) {
+        Node clickedNode = event.getPickResult().getIntersectedNode();
+        //If user clicks on the checkers board...
+        if (clickedNode != boardPane) {
+            //Get the column and row index of what part of the board was clicked
+            Integer colIndex = GridPane.getColumnIndex(clickedNode);
+            Integer rowIndex = GridPane.getRowIndex(clickedNode);
+            System.out.println("Selected Cell: X = " + colIndex + ", Y = " + rowIndex);
+
+
+        }
+    }
+
 }

@@ -13,7 +13,7 @@
    <children>
       <VBox layoutX="180.0" layoutY="55.0">
          <children>
-            <GridPane fx:id="boardPane" alignment="CENTER" centerShape="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" scaleShape="false">
+            <GridPane fx:id="boardPane" alignment="CENTER" centerShape="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#clickOnGrid" prefHeight="400.0" prefWidth="400.0" scaleShape="false">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />

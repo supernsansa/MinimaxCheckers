@@ -1,7 +1,5 @@
 package com.anoc20.minimaxcheckers;
 
-import java.util.ArrayList;
-
 public class CheckerBoard {
 
     private CheckerTile[][] board = new CheckerTile[8][8];
@@ -15,13 +13,13 @@ public class CheckerBoard {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y] = new CheckerTile(true,index);
+                    board[x][y] = new CheckerTile(Colour.BLACK,index);
                     index++;
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y] = new CheckerTile(true,index);
+                    board[x][y] = new CheckerTile(Colour.BLACK,index);
                     index++;
                 } else {
-                    board[x][y] = new CheckerTile(false,0);
+                    board[x][y] = new CheckerTile(Colour.WHITE,0);
                 }
             }
         }
@@ -33,9 +31,9 @@ public class CheckerBoard {
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(true));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK));
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(true));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK));
                 } else {
                     continue;
                 }
@@ -45,9 +43,9 @@ public class CheckerBoard {
         for (int y = 5; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(false));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE));
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(false));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE));
                 } else {
                     continue;
                 }
@@ -82,8 +80,8 @@ public class CheckerBoard {
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board.length; x++) {
                 if (board[x][y] != null) {
-                    if (board[x][y].isBlack() && board[x][y].getActivePiece() != null) {
-                        if(board[x][y].getActivePiece().isDark()) {
+                    if (board[x][y].getColour() == Colour.BLACK && board[x][y].getActivePiece() != null) {
+                        if(board[x][y].getActivePiece().getPieceColour() == PieceColour.DARK) {
                             System.out.print("D ");
                         }
                         else {
