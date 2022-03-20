@@ -10,6 +10,18 @@ public class Move {
         this.indexD = indexD;
     }
 
+    public MoveType getMoveType() {
+        return moveType;
+    }
+
+    public int getIndexO() {
+        return indexO;
+    }
+
+    public int getIndexD() {
+        return indexD;
+    }
+
     @Override
     public String toString() {
         return "Move{" +

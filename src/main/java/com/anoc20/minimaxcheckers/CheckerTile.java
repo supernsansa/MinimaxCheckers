@@ -4,10 +4,14 @@ public class CheckerTile {
     private Colour colour;
     private CheckerPiece activePiece;
     private int index;
+    private int x;
+    private int y;
 
-    public CheckerTile(Colour colour, int index) {
+    public CheckerTile(Colour colour, int index, int x, int y) {
         this.colour = colour;
         this.index = index;
+        this.x = x;
+        this.y = y;
     }
 
     public CheckerTile(Colour colour, CheckerPiece activePiece) {
@@ -30,6 +34,14 @@ public class CheckerTile {
         return index;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     public CheckerPiece getActivePiece() {
         return activePiece;
     }
@@ -48,6 +60,7 @@ public class CheckerTile {
     public void removePiece() {
         this.activePiece = null;
     }
+
 }
 
 enum Colour {

@@ -13,13 +13,13 @@ public class CheckerBoard {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y] = new CheckerTile(Colour.BLACK,index);
+                    board[x][y] = new CheckerTile(Colour.BLACK, index, x, y);
                     index++;
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y] = new CheckerTile(Colour.BLACK,index);
+                    board[x][y] = new CheckerTile(Colour.BLACK, index, x, y);
                     index++;
                 } else {
-                    board[x][y] = new CheckerTile(Colour.WHITE,0);
+                    board[x][y] = new CheckerTile(Colour.WHITE, 0, x, y);
                 }
             }
         }
@@ -61,6 +61,33 @@ public class CheckerBoard {
         this.board = board;
     }
 
+    //Returns all tiles as a 1D array
+    public CheckerTile[] getAllTiles() {
+        CheckerTile[] allTiles = new CheckerTile[64];
+        int index = 0;
+
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                allTiles[index] = board[x][y];
+                index++;
+            }
+        }
+
+        return allTiles;
+    }
+
+    //Return a CheckerTile object associated with a given index number (1 - 32)
+    public CheckerTile getTileByIndex(int index) {
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                if(board[x][y].getIndex() == index) {
+                    return board[x][y];
+                }
+            }
+        }
+        return null;
+    }
+
     //Prints a text representation of the checkerboard where each black tile is represented by and index from 1 to 32, 0 represents white
     public void printBoardTiles() {
         for (int y = 0; y < board.length; y++) {
@@ -81,10 +108,9 @@ public class CheckerBoard {
             for (int x = 0; x < board.length; x++) {
                 if (board[x][y] != null) {
                     if (board[x][y].getColour() == Colour.BLACK && board[x][y].getActivePiece() != null) {
-                        if(board[x][y].getActivePiece().getPieceColour() == PieceColour.DARK) {
+                        if (board[x][y].getActivePiece().getPieceColour() == PieceColour.DARK) {
                             System.out.print("D ");
-                        }
-                        else {
+                        } else {
                             System.out.print("W ");
                         }
                     } else {

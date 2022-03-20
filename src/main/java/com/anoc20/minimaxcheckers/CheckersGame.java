@@ -8,6 +8,7 @@ public class CheckersGame {
     private CheckerBoard playingBoard;
     private boolean playerTurn;
     private Mode difficulty;
+    private PieceColour playerColour;
 
     //Default constructor
     public CheckersGame(boolean playerTurn, Mode difficulty) {
@@ -15,6 +16,12 @@ public class CheckersGame {
         this.playingBoard.placeStartingPieces();
         this.playerTurn = playerTurn;
         this.difficulty = difficulty;
+
+        if (playerTurn == true) {
+            playerColour = PieceColour.DARK;
+        } else {
+            playerColour = PieceColour.WHITE;
+        }
     }
 
     //Change from player to AI turn and vice-versa
@@ -59,9 +66,9 @@ public class CheckersGame {
                                 availableMoves.add(new Move(MoveType.MOVEMENT, potentialTile.getIndex(), diag1.getIndex()));
                             }
                             //Otherwise if piece is in the way, check if it can be captured
-                            else if(diag1.getActivePiece().getPieceColour() == PieceColour.WHITE){
+                            else if (diag1.getActivePiece().getPieceColour() == PieceColour.WHITE) {
                                 CheckerTile diag3 = playingBoard.getBoard()[x - 2][y + 2];
-                                if(diag3.getActivePiece() == null) {
+                                if (diag3.getActivePiece() == null) {
                                     availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex()));
                                 }
                             }
@@ -74,9 +81,9 @@ public class CheckersGame {
                                 availableMoves.add(new Move(MoveType.MOVEMENT, potentialTile.getIndex(), diag2.getIndex()));
                             }
                             //Otherwise if piece is in the way, check if it can be captured
-                            else if(diag2.getActivePiece().getPieceColour() == PieceColour.WHITE){
+                            else if (diag2.getActivePiece().getPieceColour() == PieceColour.WHITE) {
                                 CheckerTile diag3 = playingBoard.getBoard()[x + 2][y + 2];
-                                if(diag3.getActivePiece() == null) {
+                                if (diag3.getActivePiece() == null) {
                                     availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex()));
                                 }
 
@@ -100,9 +107,9 @@ public class CheckersGame {
                                 availableMoves.add(new Move(MoveType.MOVEMENT, potentialTile.getIndex(), diag1.getIndex()));
                             }
                             //Otherwise if piece is in the way, check if it can be captured
-                            else if(diag1.getActivePiece().getPieceColour() == PieceColour.DARK){
+                            else if (diag1.getActivePiece().getPieceColour() == PieceColour.DARK) {
                                 CheckerTile diag3 = playingBoard.getBoard()[x - 2][y - 2];
-                                if(diag3.getActivePiece() == null) {
+                                if (diag3.getActivePiece() == null) {
                                     availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex()));
                                 }
                             }
@@ -115,9 +122,9 @@ public class CheckersGame {
                                 availableMoves.add(new Move(MoveType.MOVEMENT, potentialTile.getIndex(), diag2.getIndex()));
                             }
                             //Otherwise if piece is in the way, check if it can be captured
-                            else if(diag2.getActivePiece().getPieceColour() == PieceColour.DARK){
+                            else if (diag2.getActivePiece().getPieceColour() == PieceColour.DARK) {
                                 CheckerTile diag3 = playingBoard.getBoard()[x + 2][y - 2];
-                                if(diag3.getActivePiece() == null) {
+                                if (diag3.getActivePiece() == null) {
                                     availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex()));
                                 }
                             }
@@ -160,6 +167,9 @@ public class CheckersGame {
         this.difficulty = difficulty;
     }
 
+    public PieceColour getPlayerColour() {
+        return playerColour;
+    }
 }
 
 enum Mode {

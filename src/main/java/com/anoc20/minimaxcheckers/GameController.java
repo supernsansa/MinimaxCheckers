@@ -10,9 +10,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
+
 public class GameController {
 
     private CheckersGame checkersGame;
+    private CheckerTile selectedTile;
+    private Rectangle[][] tileShapes = new Rectangle[8][8];
 
     @FXML
     private GridPane boardPane;
@@ -27,18 +31,18 @@ public class GameController {
         checkersGame = new CheckersGame(true, Mode.MEDIUM);
         changePlayerTurnText();
         drawBoard(checkersGame.getPlayingBoard());
-        checkersGame.movePiece(1,2,0,3);
+        checkersGame.movePiece(1, 2, 0, 3);
         drawBoard(checkersGame.getPlayingBoard());
         System.out.println("BEFORE CAPTURE IS POSSIBLE");
         System.out.println(checkersGame.availableMoves(PieceColour.DARK));
         System.out.println(checkersGame.availableMoves(PieceColour.WHITE));
         System.out.println("AFTER CAPTURE IS POSSIBLE");
-        checkersGame.movePiece(0,3,1,4);
+        checkersGame.movePiece(0, 3, 1, 4);
         drawBoard(checkersGame.getPlayingBoard());
         System.out.println(checkersGame.availableMoves(PieceColour.DARK));
         System.out.println(checkersGame.availableMoves(PieceColour.WHITE));
-        checkersGame.takeTurn();
-        changePlayerTurnText();
+        //checkersGame.takeTurn();
+        //changePlayerTurnText();
     }
 
     @FXML
@@ -57,9 +61,10 @@ public class GameController {
             for (int x = 0; x < tiles.length; x++) {
 
                 if (tiles[x][y].getColour() == Colour.BLACK) {
-                    Rectangle blackTile = new Rectangle(50,50);
+                    Rectangle blackTile = new Rectangle(50, 50);
                     blackTile.setFill(Color.BLACK);
-                    boardPane.add(blackTile,x,y);
+                    tileShapes[x][y] = blackTile;
+                    boardPane.add(blackTile, x, y);
                     GridPane.setHalignment(blackTile, HPos.CENTER);
                     GridPane.setValignment(blackTile, VPos.CENTER);
 
@@ -108,11 +113,11 @@ public class GameController {
                         }
                     }
 
-                }
-                else {
-                    Rectangle whiteTile = new Rectangle(50,50);
+                } else {
+                    Rectangle whiteTile = new Rectangle(50, 50);
                     whiteTile.setFill(Color.WHEAT);
-                    boardPane.add(whiteTile,x,y);
+                    tileShapes[x][y] = whiteTile;
+                    boardPane.add(whiteTile, x, y);
                     GridPane.setHalignment(whiteTile, HPos.CENTER);
                     GridPane.setValignment(whiteTile, VPos.CENTER);
                 }
@@ -122,10 +127,9 @@ public class GameController {
 
     @FXML
     private void changePlayerTurnText() {
-        if(checkersGame.isPlayerTurn()) {
+        if (checkersGame.isPlayerTurn()) {
             turnIndicator.setText("It's Your Turn");
-        }
-        else {
+        } else {
             turnIndicator.setText("It's the AI's Turn");
         }
     }
@@ -137,10 +141,47 @@ public class GameController {
             //Get the column and row index of what part of the board was clicked
             Integer colIndex = GridPane.getColumnIndex(clickedNode);
             Integer rowIndex = GridPane.getRowIndex(clickedNode);
-            System.out.println("Selected Cell: X = " + colIndex + ", Y = " + rowIndex);
+            System.out.println("Clicked Cell: X = " + colIndex + ", Y = " + rowIndex);
 
+            //If no tile is selected
+            if (selectedTile == null && checkersGame.getPlayingBoard().getBoard()[colIndex][rowIndex].getActivePiece().getPieceColour() == checkersGame.getPlayerColour()
+                    && checkersGame.isPlayerTurn() == true) {
+                //The clicked tile becomes the selected tile (provided that it currently holds one of the player's pieces)
+                selectedTile = checkersGame.getPlayingBoard().getBoard()[colIndex][rowIndex];
+                //If it is the player's turn and they click on a tile containing one of their pieces, highlight the tile and the available tiles it can move to
+                System.out.println("It is the player's turn");
+                System.out.println("Valid tile selected");
+                //Give selected tile a gold border
+                tileShapes[colIndex][rowIndex].setStroke(Color.GOLD);
+                tileShapes[colIndex][rowIndex].setStrokeWidth(5.0);
+                ArrayList<Move> moves = checkersGame.availableMoves(checkersGame.getPlayerColour());
 
+                for (Move move : moves) {
+                    if (move.getIndexO() == selectedTile.getIndex()) {
+                        //Highlight relevant tiles
+                        CheckerTile tile = checkersGame.getPlayingBoard().getTileByIndex(move.getIndexD());
+                        tileShapes[tile.getX()][tile.getY()].setStroke(Color.GOLD);
+                        tileShapes[tile.getX()][tile.getY()].setStrokeWidth(5.0);
+                    }
+                }
+            }
+            //Alternatively, deselect tile if the user clicks the already selected tile
+            else if (checkersGame.isPlayerTurn() && selectedTile != null) {
+                if(selectedTile.getX() == colIndex && selectedTile.getY() == rowIndex) {
+                    selectedTile = null;
+                    //Remove the borders from formerly highlighted tiles
+                    for (int y = 0; y < 8; y++) {
+                        for (int x = 0; x < 8; x++) {
+                            tileShapes[x][y].setStrokeWidth(0);
+                        }
+                    }
+                    return;
+                }
+            }
+            //Otherwise, assume the user is attempting to make a move
+            else {
+                //TODO attempt to make a move, then validate by checking if said move is possible
+            }
         }
     }
-
 }
