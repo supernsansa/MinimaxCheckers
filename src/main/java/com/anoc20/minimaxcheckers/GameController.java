@@ -18,15 +18,27 @@ public class GameController {
     private GridPane boardPane;
     @FXML
     private TextArea logTextArea;
+    @FXML
+    private TextArea turnIndicator;
 
     public void initialize() {
         // controller available in initialize method
         logTextArea.appendText("Welcome to Minimax Checkers \n");
         checkersGame = new CheckersGame(true, Mode.MEDIUM);
+        changePlayerTurnText();
         drawBoard(checkersGame.getPlayingBoard());
-        System.out.println(checkersGame.availableMoves(PieceColour.DARK));
         checkersGame.movePiece(1,2,0,3);
         drawBoard(checkersGame.getPlayingBoard());
+        System.out.println("BEFORE CAPTURE IS POSSIBLE");
+        System.out.println(checkersGame.availableMoves(PieceColour.DARK));
+        System.out.println(checkersGame.availableMoves(PieceColour.WHITE));
+        System.out.println("AFTER CAPTURE IS POSSIBLE");
+        checkersGame.movePiece(0,3,1,4);
+        drawBoard(checkersGame.getPlayingBoard());
+        System.out.println(checkersGame.availableMoves(PieceColour.DARK));
+        System.out.println(checkersGame.availableMoves(PieceColour.WHITE));
+        checkersGame.takeTurn();
+        changePlayerTurnText();
     }
 
     @FXML
@@ -105,6 +117,16 @@ public class GameController {
                     GridPane.setValignment(whiteTile, VPos.CENTER);
                 }
             }
+        }
+    }
+
+    @FXML
+    private void changePlayerTurnText() {
+        if(checkersGame.isPlayerTurn()) {
+            turnIndicator.setText("It's Your Turn");
+        }
+        else {
+            turnIndicator.setText("It's the AI's Turn");
         }
     }
 
