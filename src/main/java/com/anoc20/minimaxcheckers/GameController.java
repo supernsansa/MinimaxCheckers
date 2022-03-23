@@ -4,13 +4,13 @@ import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 public class GameController {
@@ -33,6 +33,9 @@ public class GameController {
         checkersGame = new CheckersGame(true, Mode.EASY);
         changePlayerTurnText();
         drawBoard(checkersGame.getPlayingBoard());
+        checkersGame.movePiece(0,5,1,4);
+        checkersGame.getPlayingBoard().getBoard()[1][4].getActivePiece().setKing(true);
+        updatePieceLocations();
     }
 
     @FXML
@@ -202,9 +205,8 @@ public class GameController {
             Integer rowIndex = GridPane.getRowIndex(clickedNode);
             System.out.println("Clicked Cell: X = " + colIndex + ", Y = " + rowIndex);
 
-            //If no tile is selected
-            //TODO Prevent error if user clicks on empty tile (bc tile.getActivePiece() can be null)
             try {
+                //If no tile is selected
                 if (selectedTile == null && checkersGame.getPlayingBoard().getBoard()[colIndex][rowIndex].getActivePiece().getPieceColour() == checkersGame.getPlayerColour()
                         && checkersGame.isPlayerTurn() == true) {
                     //The clicked tile becomes the selected tile (provided that it currently holds one of the player's pieces)
@@ -217,9 +219,9 @@ public class GameController {
                     ArrayList<Move> moves = checkersGame.availableMoves(checkersGame.getPlayerColour());
 
                     for (Move move : moves) {
-                        if (move.getIndexO() == selectedTile.getIndex()) {
+                        if (move.getIndexOrigin() == selectedTile.getIndex()) {
                             //Highlight relevant tiles
-                            CheckerTile tile = checkersGame.getPlayingBoard().getTileByIndex(move.getIndexD());
+                            CheckerTile tile = checkersGame.getPlayingBoard().getTileByIndex(move.getIndexDest());
                             tileShapes[tile.getX()][tile.getY()].setStroke(Color.LIME);
                             tileShapes[tile.getX()][tile.getY()].setStrokeWidth(5.0);
                         }
@@ -240,9 +242,6 @@ public class GameController {
                 //Otherwise, assume the user is attempting to make a move
                 else {
                     System.out.println("Attempting a move");
-                    /**
-                     TODO Check if attempted move is possible. If it is, execute it. If not, bring up an AlertDialog telling the user said move is invalid.
-                     */
                     //TODO - First check if there is a capture that needs to be made bc of the forced capture rule
                     //Compare the index of the selected tile and the next clicked tile
                     ArrayList<Move> moves = checkersGame.availableMoves(checkersGame.getPlayerColour());
@@ -251,7 +250,7 @@ public class GameController {
 
                     //Find corresponding move
                     for (Move move : moves) {
-                        if (move.getIndexO() == selectedTile.getIndex() && move.getIndexD() == destinationIndex) {
+                        if (move.getIndexOrigin() == selectedTile.getIndex() && move.getIndexDest() == destinationIndex) {
                             System.out.println("Move found");
                             //Get and execute move
                             checkersGame.executeMove(move);
@@ -264,8 +263,12 @@ public class GameController {
                     }
                     //If no valid move is found
                     if (moveFound == false) {
-                        //TODO Put invalid move dialog here
                         System.out.println("No valid move found");
+
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Invalid Move");
+                        alert.setContentText("You have attempted an invalid move. Try something else.");
+                        alert.show();
                     }
                 }
             } catch (NullPointerException ne) {
@@ -277,8 +280,8 @@ public class GameController {
 
     @FXML
     private void clearTileBorders() {
-        for(int y = 0; y < 8; y++) {
-            for(int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
                 tileShapes[x][y].setStrokeWidth(0);
             }
         }

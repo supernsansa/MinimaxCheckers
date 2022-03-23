@@ -2,32 +2,43 @@ package com.anoc20.minimaxcheckers;
 
 public class Move {
     private MoveType moveType;
-    private int indexO,indexD;
+    private int indexOrigin, indexDest, indexCapture;
 
-    public Move(MoveType moveType, int indexO, int indexD) {
+    public Move(MoveType moveType, int indexOrigin, int indexDest) {
         this.moveType = moveType;
-        this.indexO = indexO;
-        this.indexD = indexD;
+        this.indexOrigin = indexOrigin;
+        this.indexDest = indexDest;
+    }
+
+    public Move(MoveType moveType, int indexOrigin, int indexDest, int indexCapture) {
+        this.moveType = moveType;
+        this.indexOrigin = indexOrigin;
+        this.indexDest = indexDest;
+        this.indexCapture = indexCapture;
     }
 
     public MoveType getMoveType() {
         return moveType;
     }
 
-    public int getIndexO() {
-        return indexO;
+    public int getIndexOrigin() {
+        return indexOrigin;
     }
 
-    public int getIndexD() {
-        return indexD;
+    public int getIndexDest() {
+        return indexDest;
+    }
+
+    public int getIndexCapture() {
+        return indexCapture;
     }
 
     @Override
     public String toString() {
         return "Move{" +
                 "moveType=" + moveType +
-                ", indexO=" + indexO +
-                ", indexD=" + indexD +
+                ", indexO=" + indexOrigin +
+                ", indexD=" + indexDest +
                 '}';
     }
 }
