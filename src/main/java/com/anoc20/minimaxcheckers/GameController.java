@@ -12,6 +12,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class GameController {
 
@@ -33,9 +34,6 @@ public class GameController {
         checkersGame = new CheckersGame(true, Mode.EASY);
         changePlayerTurnText();
         drawBoard(checkersGame.getPlayingBoard());
-        checkersGame.movePiece(0,5,1,4);
-        checkersGame.getPlayingBoard().getBoard()[1][4].getActivePiece().setKing(true);
-        updatePieceLocations();
     }
 
     @FXML
@@ -286,4 +284,20 @@ public class GameController {
             }
         }
     }
+
+    @FXML
+    public void takeTurn() throws InterruptedException {
+        if (checkersGame.isPlayerTurn()) {
+            checkersGame.takeTurn();
+            logTextArea.appendText("Player took their turn \n");
+
+            logTextArea.appendText("AI is thinking \n");
+            checkersGame.easyAIMove();
+            logTextArea.appendText("AI took their turn \n");
+            updatePieceLocations();
+            changePlayerTurnText();
+        }
+    }
+
+
 }

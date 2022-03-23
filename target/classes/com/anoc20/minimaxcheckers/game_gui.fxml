@@ -51,7 +51,7 @@
             <Font name="Georgia Bold" size="12.0" />
          </font>
       </TextArea>
-      <Button layoutX="19.0" layoutY="128.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="119.0" text="End Turn">
+      <Button layoutX="19.0" layoutY="128.0" mnemonicParsing="false" onAction="#takeTurn" prefHeight="58.0" prefWidth="119.0" text="End Turn">
          <font>
             <Font name="Georgia" size="20.0" />
          </font>

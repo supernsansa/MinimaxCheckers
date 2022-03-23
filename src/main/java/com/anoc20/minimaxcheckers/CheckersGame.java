@@ -1,6 +1,8 @@
 package com.anoc20.minimaxcheckers;
 
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 //Outlines a "match" object that represents a match of checkers
 public class CheckersGame {
@@ -37,6 +39,8 @@ public class CheckersGame {
         playerTurn = !playerTurn;
     }
 
+    //TODO Implement king's row
+    //This method handles non-capture movements
     public boolean movePiece(int x1, int y1, int x2, int y2) {
         CheckerTile activeTile = playingBoard.getBoard()[x1][y1];
         CheckerPiece activePiece = activeTile.getActivePiece();
@@ -53,6 +57,7 @@ public class CheckersGame {
         }
     }
 
+    //TODO Implement king's row too
     //This method handles capture manoeuvres
     public void capturePiece(int indexO, int indexD, int indexC) {
         //Get the offensive piece
@@ -62,7 +67,7 @@ public class CheckersGame {
         getPlayingBoard().getTileByIndex(indexO).removePiece();
         //Check if capture piece is king
         CheckerPiece capPiece = getPlayingBoard().getTileByIndex(indexC).getActivePiece();
-        if(capPiece.isKing()) {
+        if (capPiece.isKing()) {
             //If so, the active piece becomes a king
             activePiece.setKing(true);
         }
@@ -233,30 +238,78 @@ public class CheckersGame {
         CheckerTile originTile = getPlayingBoard().getTileByIndex(move.getIndexOrigin());
         CheckerTile destinationTile = getPlayingBoard().getTileByIndex(move.getIndexDest());
 
-        if(move.getMoveType() == MoveType.MOVEMENT) {
+        if (move.getMoveType() == MoveType.MOVEMENT) {
             System.out.println("Movement made");
             movePiece(originTile.getX(), originTile.getY(), destinationTile.getX(), destinationTile.getY());
-        }
-        else if(move.getMoveType() == MoveType.CAPTURE) {
+        } else if (move.getMoveType() == MoveType.CAPTURE) {
             System.out.println("Capture made");
             capturePiece(move.getIndexOrigin(), move.getIndexDest(), move.getIndexCapture());
         }
     }
 
+    //TODO make modified version of this with king weightings
     //Returns the amount of dark or white pieces on the board, sets finished variable to true if 0
     public int pieceCount(PieceColour pieceColour) {
         int pieceCount = 0;
-        for(int y = 0; y < 8; y++) {
-            for(int x = 0; x < 8; x++) {
-                if(playingBoard.getBoard()[x][y].getActivePiece().getPieceColour() == pieceColour) {
-                    pieceCount++;
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                if(playingBoard.getBoard()[x][y].getActivePiece() != null) {
+                    if (playingBoard.getBoard()[x][y].getActivePiece().getPieceColour() == pieceColour) {
+                        pieceCount++;
+                    }
                 }
             }
         }
-        if(pieceCount == 0) {
+        if (pieceCount == 0) {
             finished = true;
         }
         return pieceCount;
+    }
+
+    //For easy mode, have the AI pick a move randomly
+    public void easyAIMove() {
+        ArrayList<Move> possibleMoves;
+        if(playerColour == PieceColour.WHITE) {
+            possibleMoves = availableMoves(PieceColour.DARK);
+        }
+        else {
+            possibleMoves = availableMoves(PieceColour.WHITE);
+        }
+
+        Random random = new Random();
+        //TODO figure out why this arg isn't always 1 or more
+        System.out.println(possibleMoves);
+        System.out.println(possibleMoves.size());
+        int randomIndex = random.nextInt(possibleMoves.size());
+
+        System.out.println((possibleMoves.get(randomIndex)));
+        executeMove(possibleMoves.get(randomIndex));
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        takeTurn();
+    }
+
+    //This method calculates the number of opponent pieces on the board. To be used as a less than perfect heuristic.
+    public int pyrrhicHeuristic() {
+        if(playerColour == PieceColour.WHITE) {
+            return pieceCount(PieceColour.WHITE);
+        }
+        else {
+            return pieceCount(PieceColour.DARK);
+        }
+    }
+
+    //An improvement to pyrrhicHeuristic. This method calculates the number of opponent pieces on the board relative to the
+    public int betterHeuristic() {
+        if(playerColour == PieceColour.WHITE) {
+            return pieceCount(PieceColour.DARK) - pieceCount(PieceColour.WHITE);
+        }
+        else {
+            return pieceCount(PieceColour.WHITE) - pieceCount(PieceColour.DARK);
+        }
     }
 
     //Getters and Setters
@@ -288,13 +341,21 @@ public class CheckersGame {
         return playerColour;
     }
 
-    public int getMovesMade() { return movesMade; }
+    public int getMovesMade() {
+        return movesMade;
+    }
 
-    public void setMovesMade(int movesMade) { this.movesMade = movesMade; }
+    public void setMovesMade(int movesMade) {
+        this.movesMade = movesMade;
+    }
 
-    public boolean isMultiCap() { return multiCap; }
+    public boolean isMultiCap() {
+        return multiCap;
+    }
 
-    public boolean isFinished() { return finished; }
+    public boolean isFinished() {
+        return finished;
+    }
 }
 
 enum Mode {
