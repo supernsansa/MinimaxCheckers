@@ -9,6 +9,7 @@ public class CheckersGame {
     private boolean playerTurn;
     private Mode difficulty;
     private PieceColour playerColour;
+    private int movesMade;
 
     //Default constructor
     public CheckersGame(boolean playerTurn, Mode difficulty) {
@@ -91,10 +92,41 @@ public class CheckersGame {
                         } catch (ArrayIndexOutOfBoundsException indexException) {
                         }
 
+                        //If the piece is a king, check the backwards diagonals as well
                         if (potentialPiece.isKing()) {
-                            //TODO Check backward diagonals as well
+                            try {
+                                diag1 = playingBoard.getBoard()[x - 1][y - 1];
+                                if (diag1.getActivePiece() == null) {
+                                    availableMoves.add(new Move(MoveType.MOVEMENT, potentialTile.getIndex(), diag1.getIndex()));
+                                }
+                                //Otherwise if piece is in the way, check if it can be captured
+                                else if (diag1.getActivePiece().getPieceColour() == PieceColour.WHITE) {
+                                    CheckerTile diag3 = playingBoard.getBoard()[x - 2][y + 2];
+                                    if (diag3.getActivePiece() == null) {
+                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex()));
+                                    }
+                                }
+                            } catch (ArrayIndexOutOfBoundsException indexException) {
+                            }
+
+                            try {
+                                diag2 = playingBoard.getBoard()[x + 1][y - 1];
+                                if (diag2.getActivePiece() == null) {
+                                    availableMoves.add(new Move(MoveType.MOVEMENT, potentialTile.getIndex(), diag2.getIndex()));
+                                }
+                                //Otherwise if piece is in the way, check if it can be captured
+                                else if (diag2.getActivePiece().getPieceColour() == PieceColour.WHITE) {
+                                    CheckerTile diag3 = playingBoard.getBoard()[x + 2][y + 2];
+                                    if (diag3.getActivePiece() == null) {
+                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex()));
+                                    }
+
+                                }
+                            } catch (ArrayIndexOutOfBoundsException indexException) {
+                            }
                         }
                     }
+
                 } else if (pieceColour == PieceColour.WHITE) {
                     //For each white piece...
                     if (potentialPiece != null && potentialPiece.getPieceColour() == PieceColour.WHITE) {
@@ -131,8 +163,37 @@ public class CheckersGame {
                         } catch (ArrayIndexOutOfBoundsException indexException) {
                         }
 
+                        //If piece is a king, check backwards diagonals as well
                         if (potentialPiece.isKing()) {
-                            //TODO Check forward and backward diagonals
+                            try {
+                                diag1 = playingBoard.getBoard()[x - 1][y + 1];
+                                if (diag1.getActivePiece() == null) {
+                                    availableMoves.add(new Move(MoveType.MOVEMENT, potentialTile.getIndex(), diag1.getIndex()));
+                                }
+                                //Otherwise if piece is in the way, check if it can be captured
+                                else if (diag1.getActivePiece().getPieceColour() == PieceColour.DARK) {
+                                    CheckerTile diag3 = playingBoard.getBoard()[x - 2][y - 2];
+                                    if (diag3.getActivePiece() == null) {
+                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex()));
+                                    }
+                                }
+                            } catch (ArrayIndexOutOfBoundsException indexException) {
+                            }
+
+                            try {
+                                diag2 = playingBoard.getBoard()[x + 1][y + 1];
+                                if (diag2.getActivePiece() == null) {
+                                    availableMoves.add(new Move(MoveType.MOVEMENT, potentialTile.getIndex(), diag2.getIndex()));
+                                }
+                                //Otherwise if piece is in the way, check if it can be captured
+                                else if (diag2.getActivePiece().getPieceColour() == PieceColour.DARK) {
+                                    CheckerTile diag3 = playingBoard.getBoard()[x + 2][y - 2];
+                                    if (diag3.getActivePiece() == null) {
+                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex()));
+                                    }
+                                }
+                            } catch (ArrayIndexOutOfBoundsException indexException) {
+                            }
                         }
                     }
                 }
@@ -140,6 +201,19 @@ public class CheckersGame {
         }
 
         return availableMoves;
+    }
+
+    //Method for executing a movement or capture manoeuvre
+    public void executeMove(Move move) {
+        CheckerTile originTile = getPlayingBoard().getTileByIndex(move.getIndexO());
+        CheckerTile destinationTile = getPlayingBoard().getTileByIndex(move.getIndexD());
+
+        if(move.getMoveType() == MoveType.MOVEMENT) {
+            movePiece(originTile.getX(), originTile.getY(), destinationTile.getX(), destinationTile.getY());
+        }
+        else if(move.getMoveType() == MoveType.CAPTURE) {
+            //TODO Implement capture method
+        }
     }
 
     //Getters and Setters
@@ -170,6 +244,10 @@ public class CheckersGame {
     public PieceColour getPlayerColour() {
         return playerColour;
     }
+
+    public int getMovesMade() { return movesMade; }
+
+    public void setMovesMade(int movesMade) { this.movesMade = movesMade; }
 }
 
 enum Mode {
