@@ -20,6 +20,7 @@ public class GameController {
     private CheckerTile selectedTile;
     private Rectangle[][] tileShapes = new Rectangle[8][8];
     private ArrayList<Circle> pieceShapes = new ArrayList<Circle>();
+    private int multiLegIndex;
 
     @FXML
     private GridPane boardPane;
@@ -240,34 +241,95 @@ public class GameController {
                 //Otherwise, assume the user is attempting to make a move
                 else {
                     System.out.println("Attempting a move");
-                    //TODO - First check if there is a capture that needs to be made bc of the forced capture rule
-                    //Compare the index of the selected tile and the next clicked tile
-                    ArrayList<Move> moves = checkersGame.availableMoves(checkersGame.getPlayerColour());
-                    int destinationIndex = checkersGame.getPlayingBoard().getBoard()[colIndex][rowIndex].getIndex();
-                    boolean moveFound = false;
 
-                    //Find corresponding move
-                    for (Move move : moves) {
-                        if (move.getIndexOrigin() == selectedTile.getIndex() && move.getIndexDest() == destinationIndex) {
-                            System.out.println("Move found");
-                            //Get and execute move
-                            checkersGame.executeMove(move);
-                            clearTileBorders();
-                            updatePieceLocations();
-                            selectedTile = null;
-                            moveFound = true;
-                            break;
+                    //If user has not made any moves yet
+                    if (checkersGame.getMovesMade() == 0) {
+                        //First check if there are any captures the user needs to make
+                        ArrayList<Move> moves = checkersGame.availableCaptures(checkersGame.getPlayerColour());
+                        //If no captures are possible, user is free to make other types of move
+                        if(moves.size() == 0) {
+                            moves = checkersGame.availableMoves(checkersGame.getPlayerColour());
+                        }
+
+                        //Compare the index of the selected tile and the next clicked tile
+                        int destinationIndex = checkersGame.getPlayingBoard().getBoard()[colIndex][rowIndex].getIndex();
+                        boolean moveFound = false;
+
+                        //Find corresponding move
+                        for (Move move : moves) {
+                            if (move.getIndexOrigin() == selectedTile.getIndex() && move.getIndexDest() == destinationIndex) {
+                                System.out.println("Move found");
+                                //Get and execute move
+                                checkersGame.executeMove(move);
+                                //If it was a capture, save the new index of the capturing piece (needed for multi-leg capture moves)
+                                if(move.getMoveType() == MoveType.CAPTURE) {
+                                    multiLegIndex = move.getIndexDest();
+                                }
+                                clearTileBorders();
+                                updatePieceLocations();
+                                selectedTile = null;
+                                moveFound = true;
+                                break;
+                            }
+                        }
+                        //If no valid move is found
+                        if (moveFound == false) {
+                            System.out.println("No valid move found");
+
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Invalid Move");
+                            alert.setContentText("You have attempted an invalid move. Try something else.");
+                            alert.show();
                         }
                     }
-                    //If no valid move is found
-                    if (moveFound == false) {
-                        System.out.println("No valid move found");
+                    //If user has already made a move, check if multi leg is possible, otherwise throw alert telling user to finish their turn
+                    else if(checkersGame.isMultiCap()) {
+                        ArrayList<Move> multiLegCaps = checkersGame.getCapturesByIndex(checkersGame.getPlayerColour(),multiLegIndex);
+
+                        //Compare the index of the selected tile and the next clicked tile
+                        int destinationIndex = checkersGame.getPlayingBoard().getBoard()[colIndex][rowIndex].getIndex();
+                        boolean moveFound = false;
+
+                        //Find corresponding move
+                        for (Move move : multiLegCaps) {
+                            if (move.getIndexOrigin() == selectedTile.getIndex() && move.getIndexDest() == destinationIndex) {
+                                System.out.println("Move found");
+                                //Get and execute move
+                                checkersGame.executeMove(move);
+                                //If it was a capture, save the new index of the capturing piece (needed for multi-leg capture moves)
+                                if(move.getMoveType() == MoveType.CAPTURE) {
+                                    multiLegIndex = move.getIndexDest();
+                                }
+                                clearTileBorders();
+                                updatePieceLocations();
+                                selectedTile = null;
+                                moveFound = true;
+                                break;
+                            }
+                        }
+                        //If no valid move is found
+                        if (moveFound == false) {
+                            System.out.println("No valid move found");
+
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Invalid Move");
+                            alert.setContentText("You have attempted an invalid move. Try something else.");
+                            alert.show();
+                        }
+                    }
+                    //Otherwise, there is no move they can possibly make, tell user to finish their turn
+                    else {
+                        System.out.println("User has no more moves left this turn");
 
                         Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Invalid Move");
-                        alert.setContentText("You have attempted an invalid move. Try something else.");
+                        alert.setTitle("No Moves Left");
+                        alert.setContentText("You have made all the moves you can possibly make in this turn.");
                         alert.show();
                     }
+
+                    //Check if the player won
+                    victoryCheck();
+
                 }
             } catch (NullPointerException ne) {
                 //Do nothing
@@ -289,15 +351,35 @@ public class GameController {
     public void takeTurn() throws InterruptedException {
         if (checkersGame.isPlayerTurn()) {
             checkersGame.takeTurn();
+            multiLegIndex = 0;
             logTextArea.appendText("Player took their turn \n");
-
             logTextArea.appendText("AI is thinking \n");
             checkersGame.easyAIMove();
             logTextArea.appendText("AI took their turn \n");
             updatePieceLocations();
+            victoryCheck();
             changePlayerTurnText();
         }
     }
 
-
+    @FXML
+    private void victoryCheck() {
+        //Check if someone has won. Display a fitting  alert if so
+        if(checkersGame.isFinished()) {
+            if(checkersGame.getVictor() == PlayerType.HUMAN) {
+                System.out.println("You Won!");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Congratulations");
+                alert.setContentText("You won the game.");
+                alert.show();
+            }
+            else {
+                System.out.println("You Lost");
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Sorry, the AI won");
+                alert.setContentText("Better luck next time");
+                alert.show();
+            }
+        }
+    }
 }

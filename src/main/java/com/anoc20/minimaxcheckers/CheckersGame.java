@@ -14,6 +14,7 @@ public class CheckersGame {
     private int movesMade;
     private boolean multiCap;
     private boolean finished;
+    private PlayerType victor;
 
     //Default constructor
     public CheckersGame(boolean playerTurn, Mode difficulty) {
@@ -39,7 +40,6 @@ public class CheckersGame {
         playerTurn = !playerTurn;
     }
 
-    //TODO Implement king's row
     //This method handles non-capture movements
     public boolean movePiece(int x1, int y1, int x2, int y2) {
         CheckerTile activeTile = playingBoard.getBoard()[x1][y1];
@@ -51,18 +51,24 @@ public class CheckersGame {
         CheckerTile newTile = playingBoard.getBoard()[x2][y2];
         if (newTile.setActivePiece(activePiece)) {
             activeTile.removePiece();
+            //Check if piece has landed on king's row
+            if ((activePiece.getPieceColour() == PieceColour.DARK && y2 == 7) ||
+                    (activePiece.getPieceColour() == PieceColour.WHITE && y2 == 0)) {
+                activePiece.setKing(true);
+            }
+            movesMade++;
             return true;
         } else {
             return false;
         }
     }
 
-    //TODO Implement king's row too
     //This method handles capture manoeuvres
     public void capturePiece(int indexO, int indexD, int indexC) {
         //Get the offensive piece
         CheckerPiece activePiece = getPlayingBoard().getTileByIndex(indexO).getActivePiece();
         //Move the piece to where it needs to go
+        CheckerTile destTile = getPlayingBoard().getTileByIndex(indexD);
         getPlayingBoard().getTileByIndex(indexD).setActivePiece(activePiece);
         getPlayingBoard().getTileByIndex(indexO).removePiece();
         //Check if capture piece is king
@@ -71,11 +77,18 @@ public class CheckersGame {
             //If so, the active piece becomes a king
             activePiece.setKing(true);
         }
+        //Check if piece has landed on king's row
+        if ((activePiece.getPieceColour() == PieceColour.DARK && destTile.getY() == 7) ||
+                (activePiece.getPieceColour() == PieceColour.WHITE && destTile.getY() == 0)) {
+            activePiece.setKing(true);
+        }
         //Remove the captured piece
         getPlayingBoard().getTileByIndex(indexC).removePiece();
         movesMade++;
+        multiCap = true;
     }
 
+    //TODO Fix king capture detection
     //Scans the board to find all possible moves for a particular player (Dark or White)
     public ArrayList<Move> availableMoves(PieceColour pieceColour) {
         ArrayList<Move> availableMoves = new ArrayList<Move>();
@@ -131,7 +144,7 @@ public class CheckersGame {
                                 }
                                 //Otherwise if piece is in the way, check if it can be captured
                                 else if (diag1.getActivePiece().getPieceColour() == PieceColour.WHITE) {
-                                    CheckerTile diag3 = playingBoard.getBoard()[x - 2][y + 2];
+                                    CheckerTile diag3 = playingBoard.getBoard()[x - 2][y - 2];
                                     if (diag3.getActivePiece() == null) {
                                         availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag1.getIndex()));
                                     }
@@ -146,7 +159,7 @@ public class CheckersGame {
                                 }
                                 //Otherwise if piece is in the way, check if it can be captured
                                 else if (diag2.getActivePiece().getPieceColour() == PieceColour.WHITE) {
-                                    CheckerTile diag3 = playingBoard.getBoard()[x + 2][y + 2];
+                                    CheckerTile diag3 = playingBoard.getBoard()[x + 2][y - 2];
                                     if (diag3.getActivePiece() == null) {
                                         availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag2.getIndex()));
                                     }
@@ -202,7 +215,7 @@ public class CheckersGame {
                                 }
                                 //Otherwise if piece is in the way, check if it can be captured
                                 else if (diag1.getActivePiece().getPieceColour() == PieceColour.DARK) {
-                                    CheckerTile diag3 = playingBoard.getBoard()[x - 2][y - 2];
+                                    CheckerTile diag3 = playingBoard.getBoard()[x - 2][y + 2];
                                     if (diag3.getActivePiece() == null) {
                                         availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag1.getIndex()));
                                     }
@@ -217,7 +230,7 @@ public class CheckersGame {
                                 }
                                 //Otherwise if piece is in the way, check if it can be captured
                                 else if (diag2.getActivePiece().getPieceColour() == PieceColour.DARK) {
-                                    CheckerTile diag3 = playingBoard.getBoard()[x + 2][y - 2];
+                                    CheckerTile diag3 = playingBoard.getBoard()[x + 2][y + 2];
                                     if (diag3.getActivePiece() == null) {
                                         availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag2.getIndex()));
                                     }
@@ -230,9 +243,39 @@ public class CheckersGame {
             }
         }
 
+        //If no moves are available, insert a pass move into the available moves list
+        if (availableMoves.size() == 0) {
+            availableMoves.add(new Move(MoveType.PASS, 0, 0));
+        }
+
         return availableMoves;
     }
 
+    //Return an ArrayList of available capture moves (used to enforce forced capture)
+    public ArrayList<Move> availableCaptures(PieceColour pieceColour) {
+        ArrayList<Move> moves = availableMoves(pieceColour);
+        ArrayList<Move> captures = new ArrayList<Move>();
+        for (Move move : moves) {
+            if (move.getMoveType() == MoveType.CAPTURE) {
+                captures.add(move);
+            }
+        }
+        return captures;
+    }
+
+    //Return captures possible for a specific piece at a specific index (Used to check if multi-leg captures are possible)
+    public ArrayList<Move> getCapturesByIndex(PieceColour pieceColour, int index) {
+        ArrayList<Move> moves = availableCaptures(pieceColour);
+        ArrayList<Move> captures = new ArrayList<Move>();
+        for (Move move : moves) {
+            if (move.getIndexOrigin() == index) {
+                captures.add(move);
+            }
+        }
+        return captures;
+    }
+
+    //TODO Check if someone has won after every move
     //Method for executing a movement or capture manoeuvre
     public void executeMove(Move move) {
         CheckerTile originTile = getPlayingBoard().getTileByIndex(move.getIndexOrigin());
@@ -244,6 +287,20 @@ public class CheckersGame {
         } else if (move.getMoveType() == MoveType.CAPTURE) {
             System.out.println("Capture made");
             capturePiece(move.getIndexOrigin(), move.getIndexDest(), move.getIndexCapture());
+        } else if (move.getMoveType() == MoveType.PASS) {
+            System.out.println("Pass Turn");
+            takeTurn();
+        }
+
+        //Check if anyone has won
+        if((playerColour == PieceColour.DARK && pieceCount(PieceColour.WHITE) == 0)
+                || (playerColour == PieceColour.WHITE && pieceCount(PieceColour.DARK) == 0)) {
+            victor = PlayerType.HUMAN;
+            finished = true;
+        }
+        else {
+            victor = PlayerType.BOT;
+            finished = true;
         }
     }
 
@@ -253,7 +310,7 @@ public class CheckersGame {
         int pieceCount = 0;
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
-                if(playingBoard.getBoard()[x][y].getActivePiece() != null) {
+                if (playingBoard.getBoard()[x][y].getActivePiece() != null) {
                     if (playingBoard.getBoard()[x][y].getActivePiece().getPieceColour() == pieceColour) {
                         pieceCount++;
                     }
@@ -269,45 +326,36 @@ public class CheckersGame {
     //For easy mode, have the AI pick a move randomly
     public void easyAIMove() {
         ArrayList<Move> possibleMoves;
-        if(playerColour == PieceColour.WHITE) {
+        if (playerColour == PieceColour.WHITE) {
             possibleMoves = availableMoves(PieceColour.DARK);
-        }
-        else {
+        } else {
             possibleMoves = availableMoves(PieceColour.WHITE);
         }
 
         Random random = new Random();
-        //TODO figure out why this arg isn't always 1 or more
         System.out.println(possibleMoves);
         System.out.println(possibleMoves.size());
         int randomIndex = random.nextInt(possibleMoves.size());
 
         System.out.println((possibleMoves.get(randomIndex)));
         executeMove(possibleMoves.get(randomIndex));
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         takeTurn();
     }
 
     //This method calculates the number of opponent pieces on the board. To be used as a less than perfect heuristic.
     public int pyrrhicHeuristic() {
-        if(playerColour == PieceColour.WHITE) {
+        if (playerColour == PieceColour.WHITE) {
             return pieceCount(PieceColour.WHITE);
-        }
-        else {
+        } else {
             return pieceCount(PieceColour.DARK);
         }
     }
 
     //An improvement to pyrrhicHeuristic. This method calculates the number of opponent pieces on the board relative to the
     public int betterHeuristic() {
-        if(playerColour == PieceColour.WHITE) {
+        if (playerColour == PieceColour.WHITE) {
             return pieceCount(PieceColour.DARK) - pieceCount(PieceColour.WHITE);
-        }
-        else {
+        } else {
             return pieceCount(PieceColour.WHITE) - pieceCount(PieceColour.DARK);
         }
     }
@@ -356,10 +404,19 @@ public class CheckersGame {
     public boolean isFinished() {
         return finished;
     }
+
+    public PlayerType getVictor() {
+        return victor;
+    }
 }
 
 enum Mode {
     EASY,
     MEDIUM,
     HARD
+}
+
+enum PlayerType {
+    HUMAN,
+    BOT
 }
