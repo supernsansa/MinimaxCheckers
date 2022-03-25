@@ -45,5 +45,5 @@ public class Move {
 enum MoveType {
     MOVEMENT,
     CAPTURE,
-    PASS
+    FORFEIT
 }

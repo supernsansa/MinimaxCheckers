@@ -14,6 +14,11 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+//TODO More clear dialogs that explain if the problem is an invalid move or forced capture
+//TODO force player to make a move each turn
+//TODO Close game or offer rematch when match ends
+//TODO Main menu
+//TODO Toggleable available move outlines
 public class GameController {
 
     private CheckersGame checkersGame;
@@ -32,8 +37,18 @@ public class GameController {
     public void initialize() {
         // controller available in initialize method
         logTextArea.appendText("Welcome to Minimax Checkers \n");
-        checkersGame = new CheckersGame(true, Mode.EASY);
-        changePlayerTurnText();
+        checkersGame = new CheckersGame(false, Mode.EASY);
+        //If player lets AI go first, AI should make the first move
+        if(checkersGame.isPlayerTurn() == true) {
+            try {
+                takeTurn();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            changePlayerTurnText();
+        }
         drawBoard(checkersGame.getPlayingBoard());
     }
 
@@ -215,7 +230,11 @@ public class GameController {
                     //Give selected tile a gold border
                     tileShapes[colIndex][rowIndex].setStroke(Color.LIME);
                     tileShapes[colIndex][rowIndex].setStrokeWidth(5.0);
-                    ArrayList<Move> moves = checkersGame.availableMoves(checkersGame.getPlayerColour());
+                    ArrayList<Move> moves = checkersGame.availableCaptures(checkersGame.getPlayerColour());
+
+                    if(moves.size() == 0) {
+                        moves = checkersGame.availableMoves(checkersGame.getPlayerColour());
+                    }
 
                     for (Move move : moves) {
                         if (move.getIndexOrigin() == selectedTile.getIndex()) {
@@ -280,6 +299,8 @@ public class GameController {
                             alert.setTitle("Invalid Move");
                             alert.setContentText("You have attempted an invalid move. Try something else.");
                             alert.show();
+                            selectedTile = null;
+                            clearTileBorders();
                         }
                     }
                     //If user has already made a move, check if multi leg is possible, otherwise throw alert telling user to finish their turn
@@ -315,6 +336,8 @@ public class GameController {
                             alert.setTitle("Invalid Move");
                             alert.setContentText("You have attempted an invalid move. Try something else.");
                             alert.show();
+                            selectedTile = null;
+                            clearTileBorders();
                         }
                     }
                     //Otherwise, there is no move they can possibly make, tell user to finish their turn
@@ -325,6 +348,8 @@ public class GameController {
                         alert.setTitle("No Moves Left");
                         alert.setContentText("You have made all the moves you can possibly make in this turn.");
                         alert.show();
+                        selectedTile = null;
+                        clearTileBorders();
                     }
 
                     //Check if the player won
@@ -357,6 +382,17 @@ public class GameController {
             checkersGame.easyAIMove();
             logTextArea.appendText("AI took their turn \n");
             updatePieceLocations();
+            playerStuckCheck();
+            victoryCheck();
+            changePlayerTurnText();
+        }
+        else {
+            logTextArea.appendText("AI is thinking \n");
+            checkersGame.easyAIMove();
+            logTextArea.appendText("AI took their turn \n");
+            multiLegIndex = 0;
+            updatePieceLocations();
+            playerStuckCheck();
             victoryCheck();
             changePlayerTurnText();
         }
@@ -380,6 +416,16 @@ public class GameController {
                 alert.setContentText("Better luck next time");
                 alert.show();
             }
+        }
+    }
+
+    private void playerStuckCheck() {
+        boolean stuck = false;
+        System.out.println(checkersGame.availableMoves(checkersGame.getPlayerColour()));
+        Move move = checkersGame.availableMoves(checkersGame.getPlayerColour()).get(0);
+        if(move.getMoveType() == MoveType.FORFEIT) {
+            System.out.println("Player cannot make a legal move");
+            checkersGame.executeMove(move);
         }
     }
 }

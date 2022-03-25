@@ -27,25 +27,25 @@ public class CheckerBoard {
 
     //This method populates the tiles on the board with the right pieces to start a match
     public void placeStartingPieces() {
-        //First the dark pieces
+        //First the white pieces
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE));
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE));
                 } else {
                     continue;
                 }
             }
         }
-        //Next, the white pieces
+        //Next, the dark pieces
         for (int y = 5; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK));
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK));
                 } else {
                     continue;
                 }
