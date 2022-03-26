@@ -31,9 +31,9 @@ public class CheckerBoard {
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE, board[x][y].getIndex()));
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE, board[x][y].getIndex()));
                 } else {
                     continue;
                 }
@@ -43,9 +43,9 @@ public class CheckerBoard {
         for (int y = 5; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK, board[x][y].getIndex()));
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK, board[x][y].getIndex()));
                 } else {
                     continue;
                 }

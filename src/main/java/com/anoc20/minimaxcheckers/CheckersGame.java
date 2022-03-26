@@ -16,6 +16,8 @@ public class CheckersGame {
     private boolean multiCap;
     private boolean finished;
     private PlayerType victor;
+    private boolean maximise;
+    private ArrayList<CheckerPiece> removedPieces;
 
     //Default constructor
     public CheckersGame(boolean playerTurn, Mode difficulty) {
@@ -26,6 +28,7 @@ public class CheckersGame {
         this.movesMade = 0;
         this.multiCap = false;
         this.finished = false;
+        this.removedPieces = new ArrayList<CheckerPiece>();
 
         if (playerTurn == true) {
             playerColour = PieceColour.DARK;
@@ -52,6 +55,8 @@ public class CheckersGame {
         CheckerTile newTile = playingBoard.getBoard()[x2][y2];
         if (newTile.setActivePiece(activePiece)) {
             activeTile.removePiece();
+            //Update piece's internal index
+            activePiece.setPieceIndex(newTile.getIndex());
             //Check if piece has landed on king's row
             if ((activePiece.getPieceColour() == PieceColour.WHITE && y2 == 7) ||
                     (activePiece.getPieceColour() == PieceColour.DARK && y2 == 0)) {
@@ -72,6 +77,8 @@ public class CheckersGame {
         CheckerTile destTile = getPlayingBoard().getTileByIndex(indexD);
         getPlayingBoard().getTileByIndex(indexD).setActivePiece(activePiece);
         getPlayingBoard().getTileByIndex(indexO).removePiece();
+        //Update piece's internal index
+        activePiece.setPieceIndex(destTile.getIndex());
 
         //Check if captured piece is king
         CheckerPiece capPiece = getPlayingBoard().getTileByIndex(indexC).getActivePiece();
@@ -81,6 +88,7 @@ public class CheckersGame {
         }
 
         //Remove the captured piece
+        removedPieces.add(capPiece);
         getPlayingBoard().getTileByIndex(indexC).removePiece();
         movesMade++;
         multiCap = true;
@@ -302,6 +310,7 @@ public class CheckersGame {
         }
 
         //Check if anyone has won
+        /**
         if((playerColour == PieceColour.DARK && pieceCount(PieceColour.WHITE) == 0)
                 || (playerColour == PieceColour.WHITE && pieceCount(PieceColour.DARK) == 0)) {
             victor = PlayerType.HUMAN;
@@ -311,8 +320,42 @@ public class CheckersGame {
             victor = PlayerType.BOT;
             finished = true;
         }
+         */
     }
 
+    //Method to unmake a move
+    public void unmakeMove(Move move) {
+        CheckerTile originTile = getPlayingBoard().getTileByIndex(move.getIndexOrigin());
+        CheckerTile destinationTile = getPlayingBoard().getTileByIndex(move.getIndexDest());
+
+        if (move.getMoveType() == MoveType.MOVEMENT) {
+            System.out.println("Movement unmade");
+            movePiece(destinationTile.getX(), destinationTile.getY(), originTile.getX(), originTile.getY());
+        } else if (move.getMoveType() == MoveType.CAPTURE) {
+            System.out.println("Capture unmade");
+            CheckerPiece restoredPiece = null;
+            for(CheckerPiece removedPiece : removedPieces) {
+                if(removedPiece.getPieceIndex() == move.getIndexCapture()) {
+                    restoredPiece = removedPiece;
+                    break;
+                }
+            }
+            playingBoard.getTileByIndex(move.getIndexCapture()).setActivePiece(restoredPiece);
+            movePiece(destinationTile.getX(), destinationTile.getY(), originTile.getX(), originTile.getY());
+        }
+        /**
+        else if (move.getMoveType() == MoveType.FORFEIT) {
+            System.out.println("No moves possible, forfeiting game");
+            finished = true;
+            if(playerTurn) {
+                victor = PlayerType.BOT;
+            }
+            else {
+                victor = PlayerType.HUMAN;
+            }
+        }
+         */
+    }
     //TODO make modified version of this with king weightings
     //Returns the amount of dark or white pieces on the board, sets finished variable to true if 0
     public int pieceCount(PieceColour pieceColour) {
@@ -359,22 +402,133 @@ public class CheckersGame {
         takeTurn();
     }
 
-    //This method calculates the number of opponent pieces on the board. To be used as a less than perfect heuristic.
-    public int pyrrhicHeuristic() {
+
+    //TODO Investigate why some moves don't get unmade
+    //TODO Implement decrowning when unmaking a move
+    public void minimaxAIMove() {
+        ArrayList<Move> possibleMoves;
+        //If player is white, ai is dark
         if (playerColour == PieceColour.WHITE) {
+            maximise = false;
+            possibleMoves = availableCaptures(PieceColour.DARK);
+            if(possibleMoves.size() == 0) {
+                possibleMoves = availableMoves(PieceColour.DARK);
+            }
+            //Otherwise, if player is dark, ai must be white
+        } else {
+            maximise = true;
+            possibleMoves = availableCaptures(PieceColour.WHITE);
+            if(possibleMoves.size() == 0) {
+                possibleMoves = availableMoves(PieceColour.WHITE);
+            }
+        }
+
+        int eval = 0;
+        Move bestMove = null;
+        CheckersGame tempGame = this;
+        for(Move move : possibleMoves) {
+            int tempEval = minimaxABP(tempGame, 2, maximise);
+            System.out.println(tempEval);
+            if (playerColour == PieceColour.DARK) {
+                if(tempEval >= eval) {
+                    eval = tempEval;
+                    bestMove = move;
+                }
+            }
+            else {
+                if(tempEval < eval) {
+                    eval = tempEval;
+                    bestMove = move;
+                }
+            }
+        }
+
+        System.out.println(bestMove.toString());
+        executeMove(bestMove);
+        takeTurn();
+    }
+
+    //This method calculates the number of opponent pieces on the board. To be used as a less than perfect heuristic.
+    public int pyrrhicHeuristic(PieceColour pieceColour) {
+        if (pieceColour == PieceColour.WHITE) {
             return pieceCount(PieceColour.WHITE);
         } else {
             return pieceCount(PieceColour.DARK);
         }
     }
 
-    //An improvement to pyrrhicHeuristic. This method calculates the number of opponent pieces on the board relative to the
+    //An improvement to pyrrhicHeuristic. This method calculates the the number of white pieces minus the number of dark pieces
     public int betterHeuristic() {
-        if (playerColour == PieceColour.WHITE) {
-            return pieceCount(PieceColour.DARK) - pieceCount(PieceColour.WHITE);
-        } else {
-            return pieceCount(PieceColour.WHITE) - pieceCount(PieceColour.DARK);
+        return pieceCount(PieceColour.WHITE) - pieceCount(PieceColour.DARK);
+    }
+
+    int maxEvaluation = 0;
+    int minEvaluation = 0;
+    //Method that implements the Minimax search algorithm with alpha-beta pruning
+    private int minimaxABP(CheckersGame state, int depth, boolean maximise) {
+       if(depth == 0 || state.gameEnded()) {
+           System.out.println(betterHeuristic());
+           return betterHeuristic();
+       }
+       if(maximise) {
+           int max = -1000;
+           ArrayList<Move> moves;
+           if(state.playerTurn) {
+               moves = state.availableMoves(state.getPlayerColour());
+           }
+           else {
+               if(state.playerColour == PieceColour.WHITE) {
+                   moves = state.availableMoves(PieceColour.DARK);
+               }
+               else {
+                   moves = state.availableMoves(PieceColour.WHITE);
+               }
+           }
+           for(Move move : moves) {
+               if(move.getMoveType() != MoveType.FORFEIT) {
+                   state.executeMove(move);
+                   int eval = minimaxABP(state, depth-1, false);
+                   maxEvaluation = Math.max(maxEvaluation,eval);
+                   unmakeMove(move);
+               }
+           }
+           return maxEvaluation;
+       }
+       else {
+           int max = 1000;
+           ArrayList<Move> moves;
+           if(state.playerTurn) {
+               moves = state.availableMoves(state.getPlayerColour());
+           }
+           else {
+               if(state.playerColour == PieceColour.WHITE) {
+                   moves = state.availableMoves(PieceColour.DARK);
+               }
+               else {
+                   moves = state.availableMoves(PieceColour.WHITE);
+               }
+           }
+           for(Move move : moves) {
+               if(move.getMoveType() != MoveType.FORFEIT) {
+                   CheckersGame newState = state;
+                   newState.executeMove(move);
+                   int eval = minimaxABP(newState, depth-1, true);
+                   minEvaluation = Math.min(minEvaluation, eval);
+                   unmakeMove(move);
+               }
+           }
+           return minEvaluation;
+       }
+    }
+
+    public boolean gameEnded() {
+        if(pieceCount(PieceColour.WHITE) == 0) {
+            return true;
         }
+        else if(pieceCount(PieceColour.DARK) == 0) {
+            return true;
+        }
+        return false;
     }
 
     //Getters and Setters

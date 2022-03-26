@@ -37,9 +37,9 @@ public class GameController {
     public void initialize() {
         // controller available in initialize method
         logTextArea.appendText("Welcome to Minimax Checkers \n");
-        checkersGame = new CheckersGame(false, Mode.EASY);
+        checkersGame = new CheckersGame(true, Mode.EASY);
         //If player lets AI go first, AI should make the first move
-        if(checkersGame.isPlayerTurn() == true) {
+        if(checkersGame.isPlayerTurn() == false) {
             try {
                 takeTurn();
             } catch (InterruptedException e) {
@@ -379,7 +379,8 @@ public class GameController {
             multiLegIndex = 0;
             logTextArea.appendText("Player took their turn \n");
             logTextArea.appendText("AI is thinking \n");
-            checkersGame.easyAIMove();
+            //checkersGame.easyAIMove();
+            checkersGame.minimaxAIMove();
             logTextArea.appendText("AI took their turn \n");
             updatePieceLocations();
             playerStuckCheck();
@@ -388,7 +389,8 @@ public class GameController {
         }
         else {
             logTextArea.appendText("AI is thinking \n");
-            checkersGame.easyAIMove();
+            //checkersGame.easyAIMove();
+            checkersGame.minimaxAIMove();
             logTextArea.appendText("AI took their turn \n");
             multiLegIndex = 0;
             updatePieceLocations();
