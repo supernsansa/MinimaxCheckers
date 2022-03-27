@@ -279,7 +279,7 @@ public class GameController {
                             if (move.getIndexOrigin() == selectedTile.getIndex() && move.getIndexDest() == destinationIndex) {
                                 System.out.println("Move found");
                                 //Get and execute move
-                                checkersGame.executeMove(move);
+                                checkersGame.executeMove(move,true);
                                 //If it was a capture, save the new index of the capturing piece (needed for multi-leg capture moves)
                                 if(move.getMoveType() == MoveType.CAPTURE) {
                                     multiLegIndex = move.getIndexDest();
@@ -316,7 +316,7 @@ public class GameController {
                             if (move.getIndexOrigin() == selectedTile.getIndex() && move.getIndexDest() == destinationIndex) {
                                 System.out.println("Move found");
                                 //Get and execute move
-                                checkersGame.executeMove(move);
+                                checkersGame.executeMove(move,true);
                                 //If it was a capture, save the new index of the capturing piece (needed for multi-leg capture moves)
                                 if(move.getMoveType() == MoveType.CAPTURE) {
                                     multiLegIndex = move.getIndexDest();
@@ -427,7 +427,7 @@ public class GameController {
         Move move = checkersGame.availableMoves(checkersGame.getPlayerColour()).get(0);
         if(move.getMoveType() == MoveType.FORFEIT) {
             System.out.println("Player cannot make a legal move");
-            checkersGame.executeMove(move);
+            checkersGame.executeMove(move,true);
         }
     }
 }
