@@ -2,6 +2,7 @@ package com.anoc20.minimaxcheckers;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Stack;
 
 //TODO MinimaxABP algorithm, figure out way to represent multi-capture moves
 //Outlines a "match" object that represents a match of checkers
@@ -50,12 +51,12 @@ public class CheckersGame {
     }
 
     //This method handles non-capture movements
-    public boolean movePiece(int x1, int y1, int x2, int y2, boolean permanent) {
+    public void movePiece(int x1, int y1, int x2, int y2, boolean permanent) {
         CheckerTile activeTile = playingBoard.getBoard()[x1][y1];
         CheckerPiece activePiece = activeTile.getActivePiece();
         if (activePiece == null) {
             System.err.println("There is no piece at tile x: " + x1 + " y: " + y1);
-            return false;
+            return;
         }
         CheckerTile newTile = playingBoard.getBoard()[x2][y2];
         if (newTile.setActivePiece(activePiece)) {
@@ -71,9 +72,6 @@ public class CheckersGame {
                 }
             }
             movesMade++;
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -142,7 +140,8 @@ public class CheckersGame {
                             else if (diag1.getActivePiece().getPieceColour() == PieceColour.DARK) {
                                 CheckerTile diag3 = playingBoard.getBoard()[x - 2][y + 2];
                                 if (diag3.getActivePiece() == null) {
-                                    availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag1.getIndex()));
+                                    availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(),
+                                            diag1.getIndex(),diag1.getActivePiece().getId()));
                                 }
                             }
                         } catch (ArrayIndexOutOfBoundsException indexException) {
@@ -157,7 +156,8 @@ public class CheckersGame {
                             else if (diag2.getActivePiece().getPieceColour() == PieceColour.DARK) {
                                 CheckerTile diag3 = playingBoard.getBoard()[x + 2][y + 2];
                                 if (diag3.getActivePiece() == null) {
-                                    availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag2.getIndex()));
+                                    availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(),
+                                            diag2.getIndex(), diag2.getActivePiece().getId()));
                                 }
 
                             }
@@ -175,7 +175,8 @@ public class CheckersGame {
                                 else if (diag1.getActivePiece().getPieceColour() == PieceColour.DARK) {
                                     CheckerTile diag3 = playingBoard.getBoard()[x - 2][y - 2];
                                     if (diag3.getActivePiece() == null) {
-                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag1.getIndex()));
+                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(),
+                                                diag1.getIndex(), diag1.getActivePiece().getId()));
                                     }
                                 }
                             } catch (ArrayIndexOutOfBoundsException indexException) {
@@ -190,7 +191,8 @@ public class CheckersGame {
                                 else if (diag2.getActivePiece().getPieceColour() == PieceColour.DARK) {
                                     CheckerTile diag3 = playingBoard.getBoard()[x + 2][y - 2];
                                     if (diag3.getActivePiece() == null) {
-                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag2.getIndex()));
+                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(),
+                                                diag2.getIndex(), diag2.getActivePiece().getId()));
                                     }
 
                                 }
@@ -214,7 +216,8 @@ public class CheckersGame {
                             else if (diag1.getActivePiece().getPieceColour() == PieceColour.WHITE) {
                                 CheckerTile diag3 = playingBoard.getBoard()[x - 2][y - 2];
                                 if (diag3.getActivePiece() == null) {
-                                    availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag1.getIndex()));
+                                    availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(),
+                                            diag1.getIndex(), diag1.getActivePiece().getId()));
                                 }
                             }
                         } catch (ArrayIndexOutOfBoundsException indexException) {
@@ -229,7 +232,8 @@ public class CheckersGame {
                             else if (diag2.getActivePiece().getPieceColour() == PieceColour.WHITE) {
                                 CheckerTile diag3 = playingBoard.getBoard()[x + 2][y - 2];
                                 if (diag3.getActivePiece() == null) {
-                                    availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag2.getIndex()));
+                                    availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(),
+                                            diag2.getIndex(), diag2.getActivePiece().getId()));
                                 }
                             }
                         } catch (ArrayIndexOutOfBoundsException indexException) {
@@ -246,7 +250,8 @@ public class CheckersGame {
                                 else if (diag1.getActivePiece().getPieceColour() == PieceColour.WHITE) {
                                     CheckerTile diag3 = playingBoard.getBoard()[x - 2][y + 2];
                                     if (diag3.getActivePiece() == null) {
-                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag1.getIndex()));
+                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(),
+                                                diag1.getIndex(), diag1.getActivePiece().getId()));
                                     }
                                 }
                             } catch (ArrayIndexOutOfBoundsException indexException) {
@@ -261,7 +266,8 @@ public class CheckersGame {
                                 else if (diag2.getActivePiece().getPieceColour() == PieceColour.WHITE) {
                                     CheckerTile diag3 = playingBoard.getBoard()[x + 2][y + 2];
                                     if (diag3.getActivePiece() == null) {
-                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(), diag2.getIndex()));
+                                        availableMoves.add(new Move(MoveType.CAPTURE, potentialTile.getIndex(), diag3.getIndex(),
+                                                diag2.getIndex(), diag2.getActivePiece().getId()));
                                     }
                                 }
                             } catch (ArrayIndexOutOfBoundsException indexException) {
@@ -327,19 +333,6 @@ public class CheckersGame {
                 victor = PlayerType.HUMAN;
             }
         }
-
-        //Check if anyone has won
-        /**
-        if((playerColour == PieceColour.DARK && pieceCount(PieceColour.WHITE) == 0)
-                || (playerColour == PieceColour.WHITE && pieceCount(PieceColour.DARK) == 0)) {
-            victor = PlayerType.HUMAN;
-            finished = true;
-        }
-        else if(pieceCount(playerColour) == 0) {
-            victor = PlayerType.BOT;
-            finished = true;
-        }
-         */
     }
 
     //Method to unmake a move
@@ -356,7 +349,7 @@ public class CheckersGame {
             movesReversed++;
             CheckerPiece restoredPiece = null;
             for(CheckerPiece removedPiece : removedPieces) {
-                if(removedPiece.getPieceIndex() == move.getIndexCapture()) {
+                if(removedPiece.getId() == move.getCapturedPieceID()) {
                     restoredPiece = removedPiece;
                     break;
                 }
@@ -411,7 +404,7 @@ public class CheckersGame {
                             pieceCount = pieceCount + 1.5;
                         }
                         else {
-                            pieceCount++;
+                            pieceCount = pieceCount + 1;
                         }
                     }
                 }
@@ -450,11 +443,11 @@ public class CheckersGame {
         }
 
         Random random = new Random();
-        System.out.println(possibleMoves);
-        System.out.println(possibleMoves.size());
+        //System.out.println(possibleMoves);
+        //System.out.println(possibleMoves.size());
         int randomIndex = random.nextInt(possibleMoves.size());
 
-        System.out.println((possibleMoves.get(randomIndex)));
+        //System.out.println((possibleMoves.get(randomIndex)));
         executeMove(possibleMoves.get(randomIndex),true);
         takeTurn();
     }
@@ -464,6 +457,7 @@ public class CheckersGame {
         movesExecuted = 0;
         movesReversed = 0;
         ArrayList<Move> possibleMoves;
+        double eval;
         //If player is white, ai is dark
         if (playerColour == PieceColour.WHITE) {
             maximise = false;
@@ -471,6 +465,7 @@ public class CheckersGame {
             if(possibleMoves.size() == 0) {
                 possibleMoves = availableMoves(PieceColour.DARK);
             }
+            eval = 1000;
             //Otherwise, if player is dark, ai must be white
         } else {
             maximise = true;
@@ -478,28 +473,41 @@ public class CheckersGame {
             if(possibleMoves.size() == 0) {
                 possibleMoves = availableMoves(PieceColour.WHITE);
             }
+            eval = -1000;
         }
 
-        double eval = 0;
         Move bestMove = null;
-        CheckersGame tempGame = this;
         for(Move move : possibleMoves) {
-            double tempEval = minimaxABP(tempGame, 4, -1000, 1000, maximise);
+            //Change depth based on chosen difficulty
+            double tempEval = 0;
+            if(difficulty == Mode.MEDIUM) {
+                tempEval = minimaxABP(this, 6, -1000, 1000, maximise, move);
+            }
+            else {
+                tempEval = minimaxABP(this, 10, -1000, 1000, maximise, move);
+            }
+
+            System.out.println(tempEval);
             //System.out.println(tempEval);
             if (playerColour == PieceColour.DARK) {
-                if(tempEval >= eval) {
+                System.out.println(tempEval + " > " + eval);
+                if(tempEval > eval) {
                     eval = tempEval;
                     bestMove = move;
                 }
             }
             else {
-                if(tempEval <= eval) {
+                System.out.println(tempEval + " < " + eval);
+                if(tempEval < eval) {
                     eval = tempEval;
                     bestMove = move;
                 }
             }
         }
 
+        System.out.println("Possible Moves:");
+        System.out.println(possibleMoves);
+        System.out.println(eval);
         System.out.println(bestMove.toString());
         System.out.println("Minimax moves made: " + movesExecuted);
         System.out.println("Minimax moves unmade: " + movesReversed);
@@ -509,7 +517,7 @@ public class CheckersGame {
     }
 
     //This method calculates the number of white pieces minus the number of dark pieces
-    public int simpleHeuristic() {
+    public double simpleHeuristic() {
         return pieceCount(PieceColour.WHITE) - pieceCount(PieceColour.DARK);
     }
 
@@ -518,21 +526,33 @@ public class CheckersGame {
         return weightedPieceCount(PieceColour.WHITE) - weightedPieceCount(PieceColour.DARK);
     }
 
-    private double maxEvaluation = 0;
-    private double minEvaluation = 0;
     //Method that implements the Minimax search algorithm with alpha-beta pruning
-    private double minimaxABP(CheckersGame state, int depth, double alpha, double beta, boolean maximise) {
+    private double minimaxABP(CheckersGame state, int depth, double alpha, double beta, boolean maximise, Move moveToMake) {
+
+        state.executeMove(moveToMake,false);
+
        if(depth == 0 || state.gameEnded()) {
+           double returnVal;
            if(difficulty == Mode.MEDIUM) {
-               return simpleHeuristic();
+               returnVal = state.simpleHeuristic();
            }
            else {
-               return betterHeuristic();
+               returnVal = betterHeuristic();
            }
+
+           state.unmakeMove(moveToMake);
+
+           return returnVal;
        }
        if(maximise) {
-           int max = -1000;
+           double maxEvaluation = -1000;
            ArrayList<Move> moves;
+           moves = state.availableCaptures(PieceColour.WHITE);
+           if(moves.size() == 0) {
+               moves = state.availableMoves(PieceColour.WHITE);
+           }
+
+           /**
            if(state.playerTurn) {
                moves = state.availableCaptures(state.getPlayerColour());
                if(moves.size() == 0) {
@@ -553,11 +573,12 @@ public class CheckersGame {
                    }
                }
            }
+            */
+
            for(Move move : moves) {
                if(move.getMoveType() != MoveType.FORFEIT) {
-                   state.executeMove(move,false);
-                   double eval = minimaxABP(state, depth-1, alpha, beta, false);
-                   state.unmakeMove(move);
+                   //state.executeMove(move,false);
+                   double eval = minimaxABP(state, depth-1, alpha, beta, false, move);
                    maxEvaluation = Math.max(maxEvaluation,eval);
                    alpha = Math.max(alpha, eval);
                    if(beta <= alpha) {
@@ -565,11 +586,19 @@ public class CheckersGame {
                    }
                }
            }
+           state.unmakeMove(moveToMake);
            return maxEvaluation;
        }
        else {
-           int max = 1000;
+           double minEvaluation = 1000;
            ArrayList<Move> moves;
+
+           moves = state.availableCaptures(PieceColour.DARK);
+           if(moves.size() == 0) {
+               moves = state.availableMoves(PieceColour.DARK);
+           }
+
+           /**
            if(state.playerTurn) {
                moves = state.availableCaptures(state.getPlayerColour());
                if(moves.size() == 0) {
@@ -590,17 +619,20 @@ public class CheckersGame {
                    }
                }
            }
+            */
+
            for(Move move : moves) {
                if(move.getMoveType() != MoveType.FORFEIT) {
-                   state.executeMove(move,false);
-                   double eval = minimaxABP(state, depth-1, alpha, beta, true);
-                   state.unmakeMove(move);
+                   //state.executeMove(move,false);
+                   double eval = minimaxABP(state, depth-1, alpha, beta, true, move);
                    minEvaluation = Math.min(minEvaluation, eval);
+                   beta = Math.min(beta, eval);
                    if(beta <= alpha) {
                        break;
                    }
                }
            }
+           state.unmakeMove(moveToMake);
            return minEvaluation;
        }
     }

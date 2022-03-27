@@ -2,7 +2,7 @@ package com.anoc20.minimaxcheckers;
 
 public class Move {
     private MoveType moveType;
-    private int indexOrigin, indexDest, indexCapture;
+    private int indexOrigin, indexDest, indexCapture, capturedPieceID;
 
     public Move(MoveType moveType, int indexOrigin, int indexDest) {
         this.moveType = moveType;
@@ -10,11 +10,12 @@ public class Move {
         this.indexDest = indexDest;
     }
 
-    public Move(MoveType moveType, int indexOrigin, int indexDest, int indexCapture) {
+    public Move(MoveType moveType, int indexOrigin, int indexDest, int indexCapture, int capturedPieceID) {
         this.moveType = moveType;
         this.indexOrigin = indexOrigin;
         this.indexDest = indexDest;
         this.indexCapture = indexCapture;
+        this.capturedPieceID = capturedPieceID;
     }
 
     public MoveType getMoveType() {
@@ -31,6 +32,10 @@ public class Move {
 
     public int getIndexCapture() {
         return indexCapture;
+    }
+
+    public int getCapturedPieceID() {
+        return capturedPieceID;
     }
 
     @Override

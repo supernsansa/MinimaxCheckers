@@ -42,7 +42,7 @@ public class GameController {
     public void initialize() {
         // controller available in initialize method
         logTextArea.appendText("Welcome to Minimax Checkers \n");
-        checkersGame = new CheckersGame(true, Mode.HARD);
+        checkersGame = new CheckersGame(false, Mode.HARD);
         //If player lets AI go first, AI should make the first move
         if(checkersGame.isPlayerTurn() == false) {
             try {

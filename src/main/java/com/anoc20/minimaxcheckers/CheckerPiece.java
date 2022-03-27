@@ -5,11 +5,13 @@ public class CheckerPiece {
     private PieceColour pieceColour;
     private boolean isKing;
     private int pieceIndex;
+    private int id;
 
     //Constructor only contains isDark parameter as pieces can never start as kings
-    public CheckerPiece(PieceColour pieceColour, int pieceIndex) {
+    public CheckerPiece(PieceColour pieceColour, int pieceIndex, int id) {
         this.pieceColour = pieceColour;
         this.pieceIndex = pieceIndex;
+        this.id = id;
     }
 
     //No setter for isDark as pieces cannot change colour
@@ -31,6 +33,10 @@ public class CheckerPiece {
 
     public void setPieceIndex(int pieceIndex) {
         this.pieceIndex = pieceIndex;
+    }
+
+    public int getId() {
+        return id;
     }
 }
 

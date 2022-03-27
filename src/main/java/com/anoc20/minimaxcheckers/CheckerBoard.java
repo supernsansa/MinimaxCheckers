@@ -27,13 +27,16 @@ public class CheckerBoard {
 
     //This method populates the tiles on the board with the right pieces to start a match
     public void placeStartingPieces() {
+        int id = 0;
         //First the white pieces
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE, board[x][y].getIndex()));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE, board[x][y].getIndex(),id));
+                    id++;
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE, board[x][y].getIndex()));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE, board[x][y].getIndex(),id));
+                    id++;
                 } else {
                     continue;
                 }
@@ -43,9 +46,11 @@ public class CheckerBoard {
         for (int y = 5; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK, board[x][y].getIndex()));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK, board[x][y].getIndex(),id));
+                    id++;
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK, board[x][y].getIndex()));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK, board[x][y].getIndex(),id));
+                    id++;
                 } else {
                     continue;
                 }
