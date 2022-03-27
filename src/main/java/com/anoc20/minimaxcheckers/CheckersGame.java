@@ -2,7 +2,6 @@ package com.anoc20.minimaxcheckers;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 //TODO MinimaxABP algorithm, figure out way to represent multi-capture moves
 //Outlines a "match" object that represents a match of checkers
@@ -381,7 +380,7 @@ public class CheckersGame {
             }
         }
     }
-    //TODO make modified version of this with king weightings
+
     //Returns the amount of dark or white pieces on the board, sets finished variable to true if 0
     public int pieceCount(PieceColour pieceColour) {
         int pieceCount = 0;
@@ -398,6 +397,39 @@ public class CheckersGame {
             finished = true;
         }
         return pieceCount;
+    }
+
+    //Returns the quantity of a certain colour's pieces, this time with increased weightings for king pieces
+    public double weightedPieceCount(PieceColour pieceColour) {
+        double pieceCount = 0;
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                if (playingBoard.getBoard()[x][y].getActivePiece() != null) {
+                    if (playingBoard.getBoard()[x][y].getActivePiece().getPieceColour() == pieceColour) {
+                        //Add 2 to the piece count if the piece is a king
+                        if(playingBoard.getBoard()[x][y].getActivePiece().isKing()) {
+                            pieceCount = pieceCount + 1.5;
+                        }
+                        else {
+                            pieceCount++;
+                        }
+                    }
+                }
+            }
+        }
+        if (pieceCount == 0) {
+            finished = true;
+        }
+        return pieceCount;
+    }
+
+    public void AIMove() {
+        if(difficulty == Mode.EASY) {
+            easyAIMove();
+        }
+        else {
+            minimaxAIMove();
+        }
     }
 
     //For easy mode, have the AI pick a move randomly (no multi-leg)
@@ -427,9 +459,7 @@ public class CheckersGame {
         takeTurn();
     }
 
-
-    //TODO Investigate why some moves don't get unmade
-    //TODO Implement decrowning when unmaking a move
+    //For medium and hard mode, have the AI pick the best move as determined by the Minimax algorithm with Alpha Beta pruning
     public void minimaxAIMove() {
         movesExecuted = 0;
         movesReversed = 0;
@@ -450,11 +480,11 @@ public class CheckersGame {
             }
         }
 
-        int eval = 0;
+        double eval = 0;
         Move bestMove = null;
         CheckersGame tempGame = this;
         for(Move move : possibleMoves) {
-            int tempEval = minimaxABP(tempGame, 2, maximise);
+            double tempEval = minimaxABP(tempGame, 4, -1000, 1000, maximise);
             //System.out.println(tempEval);
             if (playerColour == PieceColour.DARK) {
                 if(tempEval >= eval) {
@@ -463,7 +493,7 @@ public class CheckersGame {
                 }
             }
             else {
-                if(tempEval < eval) {
+                if(tempEval <= eval) {
                     eval = tempEval;
                     bestMove = move;
                 }
@@ -478,27 +508,27 @@ public class CheckersGame {
         takeTurn();
     }
 
-    //This method calculates the number of opponent pieces on the board. To be used as a less than perfect heuristic.
-    public int pyrrhicHeuristic(PieceColour pieceColour) {
-        if (pieceColour == PieceColour.WHITE) {
-            return pieceCount(PieceColour.WHITE);
-        } else {
-            return pieceCount(PieceColour.DARK);
-        }
-    }
-
-    //An improvement to pyrrhicHeuristic. This method calculates the the number of white pieces minus the number of dark pieces
-    public int betterHeuristic() {
+    //This method calculates the number of white pieces minus the number of dark pieces
+    public int simpleHeuristic() {
         return pieceCount(PieceColour.WHITE) - pieceCount(PieceColour.DARK);
     }
 
-    int maxEvaluation = 0;
-    int minEvaluation = 0;
+    //This method calculates the number of white pieces minus the number of dark pieces, with king weightings factored in
+    public double betterHeuristic() {
+        return weightedPieceCount(PieceColour.WHITE) - weightedPieceCount(PieceColour.DARK);
+    }
+
+    private double maxEvaluation = 0;
+    private double minEvaluation = 0;
     //Method that implements the Minimax search algorithm with alpha-beta pruning
-    private int minimaxABP(CheckersGame state, int depth, boolean maximise) {
+    private double minimaxABP(CheckersGame state, int depth, double alpha, double beta, boolean maximise) {
        if(depth == 0 || state.gameEnded()) {
-           //System.out.println(betterHeuristic());
-           return betterHeuristic();
+           if(difficulty == Mode.MEDIUM) {
+               return simpleHeuristic();
+           }
+           else {
+               return betterHeuristic();
+           }
        }
        if(maximise) {
            int max = -1000;
@@ -526,9 +556,13 @@ public class CheckersGame {
            for(Move move : moves) {
                if(move.getMoveType() != MoveType.FORFEIT) {
                    state.executeMove(move,false);
-                   int eval = minimaxABP(state, depth-1, false);
+                   double eval = minimaxABP(state, depth-1, alpha, beta, false);
+                   state.unmakeMove(move);
                    maxEvaluation = Math.max(maxEvaluation,eval);
-                   unmakeMove(move);
+                   alpha = Math.max(alpha, eval);
+                   if(beta <= alpha) {
+                       break;
+                   }
                }
            }
            return maxEvaluation;
@@ -559,9 +593,12 @@ public class CheckersGame {
            for(Move move : moves) {
                if(move.getMoveType() != MoveType.FORFEIT) {
                    state.executeMove(move,false);
-                   int eval = minimaxABP(state, depth-1, true);
+                   double eval = minimaxABP(state, depth-1, alpha, beta, true);
+                   state.unmakeMove(move);
                    minEvaluation = Math.min(minEvaluation, eval);
-                   unmakeMove(move);
+                   if(beta <= alpha) {
+                       break;
+                   }
                }
            }
            return minEvaluation;

@@ -19,6 +19,10 @@ import java.util.concurrent.TimeUnit;
 //TODO Close game or offer rematch when match ends
 //TODO Main menu
 //TODO Toggleable available move outlines
+//TODO Optional AI move hint
+//TODO Remove log box
+//TODO Fix victory dialogs
+//TODO Make a rules pop-up window
 public class GameController {
 
     private CheckersGame checkersGame;
@@ -26,6 +30,7 @@ public class GameController {
     private Rectangle[][] tileShapes = new Rectangle[8][8];
     private ArrayList<Circle> pieceShapes = new ArrayList<Circle>();
     private int multiLegIndex;
+    private boolean helpEnabled;
 
     @FXML
     private GridPane boardPane;
@@ -37,7 +42,7 @@ public class GameController {
     public void initialize() {
         // controller available in initialize method
         logTextArea.appendText("Welcome to Minimax Checkers \n");
-        checkersGame = new CheckersGame(true, Mode.EASY);
+        checkersGame = new CheckersGame(true, Mode.HARD);
         //If player lets AI go first, AI should make the first move
         if(checkersGame.isPlayerTurn() == false) {
             try {
@@ -380,7 +385,7 @@ public class GameController {
             logTextArea.appendText("Player took their turn \n");
             logTextArea.appendText("AI is thinking \n");
             //checkersGame.easyAIMove();
-            checkersGame.minimaxAIMove();
+            checkersGame.AIMove();
             logTextArea.appendText("AI took their turn \n");
             updatePieceLocations();
             playerStuckCheck();
@@ -390,7 +395,7 @@ public class GameController {
         else {
             logTextArea.appendText("AI is thinking \n");
             //checkersGame.easyAIMove();
-            checkersGame.minimaxAIMove();
+            checkersGame.AIMove();
             logTextArea.appendText("AI took their turn \n");
             multiLegIndex = 0;
             updatePieceLocations();
