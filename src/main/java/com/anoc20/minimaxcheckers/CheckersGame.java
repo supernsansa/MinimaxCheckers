@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
-//TODO MinimaxABP algorithm, figure out way to represent multi-capture moves
+//TODO Implement AI multicap
+//TODO Implement AI multicap
 //Outlines a "match" object that represents a match of checkers
 public class CheckersGame {
 
@@ -386,9 +387,6 @@ public class CheckersGame {
                 }
             }
         }
-        if (pieceCount == 0) {
-            finished = true;
-        }
         return pieceCount;
     }
 
@@ -409,9 +407,6 @@ public class CheckersGame {
                     }
                 }
             }
-        }
-        if (pieceCount == 0) {
-            finished = true;
         }
         return pieceCount;
     }
@@ -481,24 +476,25 @@ public class CheckersGame {
             //Change depth based on chosen difficulty
             double tempEval = 0;
             if(difficulty == Mode.MEDIUM) {
-                tempEval = minimaxABP(this, 6, -1000, 1000, maximise, move);
+                tempEval = minimaxABP(this, 4, -1000, 1000, maximise, move);
             }
             else {
-                tempEval = minimaxABP(this, 10, -1000, 1000, maximise, move);
+                tempEval = minimaxABP(this, 8, -1000, 1000, maximise, move);
             }
 
+            //TODO if evaluations are equal, pick one randomly
             System.out.println(tempEval);
             //System.out.println(tempEval);
             if (playerColour == PieceColour.DARK) {
                 System.out.println(tempEval + " > " + eval);
-                if(tempEval > eval) {
+                if(tempEval >= eval) {
                     eval = tempEval;
                     bestMove = move;
                 }
             }
             else {
                 System.out.println(tempEval + " < " + eval);
-                if(tempEval < eval) {
+                if(tempEval <= eval) {
                     eval = tempEval;
                     bestMove = move;
                 }

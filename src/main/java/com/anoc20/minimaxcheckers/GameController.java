@@ -5,6 +5,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -31,30 +32,21 @@ public class GameController {
     private ArrayList<Circle> pieceShapes = new ArrayList<Circle>();
     private int multiLegIndex;
     private boolean helpEnabled;
+    private Mode difficulty;
 
     @FXML
     private GridPane boardPane;
-    @FXML
-    private TextArea logTextArea;
-    @FXML
-    private TextArea turnIndicator;
 
-    public void initialize() {
-        // controller available in initialize method
-        logTextArea.appendText("Welcome to Minimax Checkers \n");
-        checkersGame = new CheckersGame(false, Mode.HARD);
-        //If player lets AI go first, AI should make the first move
-        if(checkersGame.isPlayerTurn() == false) {
-            try {
-                takeTurn();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            changePlayerTurnText();
-        }
+    public void initialize() throws InterruptedException {
+        difficulty = Mode.HARD;
+        checkersGame = new CheckersGame(false, difficulty);
         drawBoard(checkersGame.getPlayingBoard());
+        //If player lets AI go first, AI should make the first move
+        if (checkersGame.isPlayerTurn() == false) {
+            checkersGame.easyAIMove();
+            multiLegIndex = 0;
+            updatePieceLocations();
+        }
     }
 
     @FXML
@@ -205,15 +197,6 @@ public class GameController {
         }
     }
 
-    @FXML
-    private void changePlayerTurnText() {
-        if (checkersGame.isPlayerTurn()) {
-            turnIndicator.setText("It's Your Turn");
-        } else {
-            turnIndicator.setText("It's the AI's Turn");
-        }
-    }
-
     //This method handles all game actions involving the user clicking on the checkers board
     public void clickOnGrid(javafx.scene.input.MouseEvent event) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
@@ -237,7 +220,7 @@ public class GameController {
                     tileShapes[colIndex][rowIndex].setStrokeWidth(5.0);
                     ArrayList<Move> moves = checkersGame.availableCaptures(checkersGame.getPlayerColour());
 
-                    if(moves.size() == 0) {
+                    if (moves.size() == 0) {
                         moves = checkersGame.availableMoves(checkersGame.getPlayerColour());
                     }
 
@@ -271,7 +254,7 @@ public class GameController {
                         //First check if there are any captures the user needs to make
                         ArrayList<Move> moves = checkersGame.availableCaptures(checkersGame.getPlayerColour());
                         //If no captures are possible, user is free to make other types of move
-                        if(moves.size() == 0) {
+                        if (moves.size() == 0) {
                             moves = checkersGame.availableMoves(checkersGame.getPlayerColour());
                         }
 
@@ -284,9 +267,9 @@ public class GameController {
                             if (move.getIndexOrigin() == selectedTile.getIndex() && move.getIndexDest() == destinationIndex) {
                                 System.out.println("Move found");
                                 //Get and execute move
-                                checkersGame.executeMove(move,true);
+                                checkersGame.executeMove(move, true);
                                 //If it was a capture, save the new index of the capturing piece (needed for multi-leg capture moves)
-                                if(move.getMoveType() == MoveType.CAPTURE) {
+                                if (move.getMoveType() == MoveType.CAPTURE) {
                                     multiLegIndex = move.getIndexDest();
                                 }
                                 clearTileBorders();
@@ -309,8 +292,8 @@ public class GameController {
                         }
                     }
                     //If user has already made a move, check if multi leg is possible, otherwise throw alert telling user to finish their turn
-                    else if(checkersGame.isMultiCap()) {
-                        ArrayList<Move> multiLegCaps = checkersGame.getCapturesByIndex(checkersGame.getPlayerColour(),multiLegIndex);
+                    else if (checkersGame.isMultiCap()) {
+                        ArrayList<Move> multiLegCaps = checkersGame.getCapturesByIndex(checkersGame.getPlayerColour(), multiLegIndex);
 
                         //Compare the index of the selected tile and the next clicked tile
                         int destinationIndex = checkersGame.getPlayingBoard().getBoard()[colIndex][rowIndex].getIndex();
@@ -321,9 +304,9 @@ public class GameController {
                             if (move.getIndexOrigin() == selectedTile.getIndex() && move.getIndexDest() == destinationIndex) {
                                 System.out.println("Move found");
                                 //Get and execute move
-                                checkersGame.executeMove(move,true);
+                                checkersGame.executeMove(move, true);
                                 //If it was a capture, save the new index of the capturing piece (needed for multi-leg capture moves)
-                                if(move.getMoveType() == MoveType.CAPTURE) {
+                                if (move.getMoveType() == MoveType.CAPTURE) {
                                     multiLegIndex = move.getIndexDest();
                                 }
                                 clearTileBorders();
@@ -379,60 +362,66 @@ public class GameController {
 
     @FXML
     public void takeTurn() throws InterruptedException {
-        if (checkersGame.isPlayerTurn()) {
+        if (checkersGame.isPlayerTurn() && checkersGame.getMovesMade() != 0) {
             checkersGame.takeTurn();
             multiLegIndex = 0;
-            logTextArea.appendText("Player took their turn \n");
-            logTextArea.appendText("AI is thinking \n");
             //checkersGame.easyAIMove();
             checkersGame.AIMove();
-            logTextArea.appendText("AI took their turn \n");
             updatePieceLocations();
             playerStuckCheck();
             victoryCheck();
-            changePlayerTurnText();
         }
-        else {
-            logTextArea.appendText("AI is thinking \n");
-            //checkersGame.easyAIMove();
-            checkersGame.AIMove();
-            logTextArea.appendText("AI took their turn \n");
-            multiLegIndex = 0;
-            updatePieceLocations();
-            playerStuckCheck();
-            victoryCheck();
-            changePlayerTurnText();
+        else if (checkersGame.isPlayerTurn() && checkersGame.getMovesMade() == 0){
+            if(playerStuckCheck()) {
+                return;
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("You Must Make at Least 1 Move");
+                alert.setContentText("You cannot end your turn without making a move.");
+                alert.show();
+                selectedTile = null;
+                clearTileBorders();
+            }
         }
     }
 
     @FXML
     private void victoryCheck() {
         //Check if someone has won. Display a fitting  alert if so
-        if(checkersGame.isFinished()) {
-            if(checkersGame.getVictor() == PlayerType.HUMAN) {
+        if (checkersGame.isFinished()) {
+            if (checkersGame.getVictor() == PlayerType.HUMAN) {
+                ButtonType rematch = new ButtonType("Rematch");
+                ButtonType mainMenu = new ButtonType("Main Menu");
                 System.out.println("You Won!");
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Congratulations");
-                alert.setContentText("You won the game.");
+                Alert alert = new Alert(Alert.AlertType.NONE, "You Win", rematch, mainMenu);
+                //alert.setTitle("Congratulations");
+                alert.setContentText("You won this match.");
                 alert.show();
-            }
-            else {
+            } else {
+                ButtonType rematch = new ButtonType("Rematch");
+                ButtonType mainMenu = new ButtonType("Main Menu");
                 System.out.println("You Lost");
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Sorry, the AI won");
-                alert.setContentText("Better luck next time");
+                Alert alert = new Alert(Alert.AlertType.NONE, "Game Over", rematch, mainMenu);
+                //alert.setTitle("Sorry, the AI won");
+                alert.setContentText("The AI won, better luck next time.");
                 alert.show();
             }
         }
     }
 
-    private void playerStuckCheck() {
-        boolean stuck = false;
+    private boolean playerStuckCheck() {
         System.out.println(checkersGame.availableMoves(checkersGame.getPlayerColour()));
         Move move = checkersGame.availableMoves(checkersGame.getPlayerColour()).get(0);
-        if(move.getMoveType() == MoveType.FORFEIT) {
+        if (move.getMoveType() == MoveType.FORFEIT) {
             System.out.println("Player cannot make a legal move");
-            checkersGame.executeMove(move,true);
+            checkersGame.executeMove(move, true);
+            return true;
         }
+        return false;
+    }
+
+    private void rematch(Mode difficulty) {
+
     }
 }
