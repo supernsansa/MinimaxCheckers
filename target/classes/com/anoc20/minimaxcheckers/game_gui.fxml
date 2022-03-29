@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.anoc20.minimaxcheckers.GameController">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.anoc20.minimaxcheckers.GameController">
    <children>
-      <GridPane fx:id="boardPane" alignment="CENTER" centerShape="false" layoutX="200.0" layoutY="126.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#clickOnGrid" prefHeight="400.0" prefWidth="400.0" scaleShape="false">
+      <GridPane fx:id="boardPane" alignment="CENTER" centerShape="false" layoutX="200.0" layoutY="150.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#clickOnGrid" prefHeight="400.0" prefWidth="400.0" scaleShape="false">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
@@ -21,20 +27,49 @@
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <Button alignment="CENTER" layoutX="340.0" layoutY="563.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#takeTurn" prefHeight="60.0" prefWidth="120.0" text="End Turn">
+      <Button alignment="CENTER" layoutX="340.0" layoutY="589.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#takeTurn" prefHeight="60.0" prefWidth="120.0" text="End Turn">
          <font>
-            <Font name="Arial" size="18.0" />
+            <Font name="Arial Bold Italic" size="18.0" />
          </font>
       </Button>
+      <StackPane layoutX="14.0" layoutY="37.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="BEIGE" height="60.0" stroke="BROWN" strokeType="INSIDE" strokeWidth="5.0" width="198.0" />
+            <Text fx:id="playerColourText" strokeType="OUTSIDE" strokeWidth="0.0" text="You Are: " textAlignment="CENTER">
+               <font>
+                  <Font name="Arial Bold Italic" size="14.0" />
+               </font>
+            </Text>
+         </children>
+      </StackPane>
+      <MenuBar layoutY="2.0" prefHeight="26.0" prefWidth="800.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="New Game">
+               <items>
+                  <MenuItem fx:id="newGameMenu" mnemonicParsing="false" onAction="#newGameStart" text="Start" />
+               </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Rules">
+               <items>
+                  <MenuItem fx:id="rulesMenu" mnemonicParsing="false" text="Display" />
+               </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Hint">
+               <items>
+                  <MenuItem fx:id="hintMenu" mnemonicParsing="false" text="Enable" />
+               </items>
+          </Menu>
+        </menus>
+      </MenuBar>
    </children>
 </AnchorPane>

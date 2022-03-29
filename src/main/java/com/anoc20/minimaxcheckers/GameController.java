@@ -1,28 +1,26 @@
 package com.anoc20.minimaxcheckers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextArea;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-//TODO More clear dialogs that explain if the problem is an invalid move or forced capture
-//TODO force player to make a move each turn
-//TODO Close game or offer rematch when match ends
-//TODO Main menu
 //TODO Toggleable available move outlines
-//TODO Optional AI move hint
-//TODO Remove log box
-//TODO Fix victory dialogs
 //TODO Make a rules pop-up window
 public class GameController {
 
@@ -31,18 +29,37 @@ public class GameController {
     private Rectangle[][] tileShapes = new Rectangle[8][8];
     private ArrayList<Circle> pieceShapes = new ArrayList<Circle>();
     private int multiLegIndex;
-    private boolean helpEnabled;
     private Mode difficulty;
+    private boolean playerStarts;
+    private boolean forcedCapture;
 
     @FXML
     private GridPane boardPane;
+    @FXML
+    private Text playerColourText;
+    @FXML
+    private MenuItem newGameMenu;
+    @FXML
+    private MenuItem rulesMenu;
+    @FXML
+    private MenuItem hintMenu;
 
     public void initialize() throws InterruptedException {
-        difficulty = Mode.HARD;
-        checkersGame = new CheckersGame(false, difficulty);
+        //Set colour indicator
+        if(GameApplication.playerColour == PieceColour.DARK) {
+            playerColourText.setText(playerColourText.getText() + "Red");
+            playerStarts = true;
+        }
+        else {
+            playerColourText.setText(playerColourText.getText() + "White");
+            playerStarts = false;
+        }
+        difficulty = GameApplication.difficulty;
+        checkersGame = new CheckersGame(playerStarts, difficulty);
         drawBoard(checkersGame.getPlayingBoard());
-        //If player lets AI go first, AI should make the first move
+        //If player lets AI go first, AI should make the first move.
         if (checkersGame.isPlayerTurn() == false) {
+            //First move is always random
             checkersGame.easyAIMove();
             multiLegIndex = 0;
             updatePieceLocations();
@@ -253,9 +270,11 @@ public class GameController {
                     if (checkersGame.getMovesMade() == 0) {
                         //First check if there are any captures the user needs to make
                         ArrayList<Move> moves = checkersGame.availableCaptures(checkersGame.getPlayerColour());
+                        forcedCapture = true;
                         //If no captures are possible, user is free to make other types of move
                         if (moves.size() == 0) {
                             moves = checkersGame.availableMoves(checkersGame.getPlayerColour());
+                            forcedCapture = false;
                         }
 
                         //Compare the index of the selected tile and the next clicked tile
@@ -284,8 +303,14 @@ public class GameController {
                             System.out.println("No valid move found");
 
                             Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle("Invalid Move");
-                            alert.setContentText("You have attempted an invalid move. Try something else.");
+                            if(forcedCapture) {
+                                alert.setTitle("Invalid Move");
+                                alert.setContentText("There is a capture you must make this turn.");
+                            }
+                            else {
+                                alert.setTitle("Invalid Move");
+                                alert.setContentText("You have attempted an invalid move. Try something else.");
+                            }
                             alert.show();
                             selectedTile = null;
                             clearTileBorders();
@@ -322,7 +347,7 @@ public class GameController {
 
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setTitle("Invalid Move");
-                            alert.setContentText("You have attempted an invalid move. Try something else.");
+                            alert.setContentText("You have attempted an invalid move. Either make a multi-leg capture or take your turn.");
                             alert.show();
                             selectedTile = null;
                             clearTileBorders();
@@ -334,7 +359,7 @@ public class GameController {
 
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("No Moves Left");
-                        alert.setContentText("You have made all the moves you can possibly make in this turn.");
+                        alert.setContentText("You have made all the moves you can possibly make this turn.");
                         alert.show();
                         selectedTile = null;
                         clearTileBorders();
@@ -344,7 +369,7 @@ public class GameController {
                     victoryCheck();
 
                 }
-            } catch (NullPointerException ne) {
+            } catch (NullPointerException | IOException ne) {
                 //Do nothing
                 return;
             }
@@ -361,7 +386,7 @@ public class GameController {
     }
 
     @FXML
-    public void takeTurn() throws InterruptedException {
+    public void takeTurn() throws InterruptedException, IOException {
         if (checkersGame.isPlayerTurn() && checkersGame.getMovesMade() != 0) {
             checkersGame.takeTurn();
             multiLegIndex = 0;
@@ -387,25 +412,29 @@ public class GameController {
     }
 
     @FXML
-    private void victoryCheck() {
+    private void victoryCheck() throws IOException {
         //Check if someone has won. Display a fitting  alert if so
         if (checkersGame.isFinished()) {
+            ButtonType rematch = new ButtonType("New Game");
+            ButtonType close = new ButtonType("Exit");
+            Alert alert = new Alert(Alert.AlertType.NONE, "End of Game", rematch, close);
             if (checkersGame.getVictor() == PlayerType.HUMAN) {
-                ButtonType rematch = new ButtonType("Rematch");
-                ButtonType mainMenu = new ButtonType("Main Menu");
                 System.out.println("You Won!");
-                Alert alert = new Alert(Alert.AlertType.NONE, "You Win", rematch, mainMenu);
-                //alert.setTitle("Congratulations");
                 alert.setContentText("You won this match.");
-                alert.show();
             } else {
-                ButtonType rematch = new ButtonType("Rematch");
-                ButtonType mainMenu = new ButtonType("Main Menu");
                 System.out.println("You Lost");
-                Alert alert = new Alert(Alert.AlertType.NONE, "Game Over", rematch, mainMenu);
-                //alert.setTitle("Sorry, the AI won");
                 alert.setContentText("The AI won, better luck next time.");
-                alert.show();
+            }
+            Optional<ButtonType> option = alert.showAndWait();
+            //Handle user input
+            if(option.isPresent() && option.get() == close) {
+                Platform.exit();
+            }
+            else if(option.isPresent() && option.get() == rematch) {
+                FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("new_game.fxml"));
+                Scene scene = new Scene(fxmlLoader.load(), 800, 700);
+                Stage newStage = (Stage) boardPane.getScene().getWindow();
+                newStage.setScene(scene);
             }
         }
     }
@@ -421,7 +450,11 @@ public class GameController {
         return false;
     }
 
-    private void rematch(Mode difficulty) {
-
+    @FXML
+    private void newGameStart() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("new_game.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 800, 700);
+        Stage newStage = (Stage) boardPane.getScene().getWindow();
+        newStage.setScene(scene);
     }
 }

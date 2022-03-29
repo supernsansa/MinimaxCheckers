@@ -8,9 +8,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class GameApplication extends Application {
+    public static Mode difficulty = Mode.HARD;
+    public static PieceColour playerColour = PieceColour.DARK;
+    public static boolean hintsEnabled = true;
+
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("game_gui.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("main_menu.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 700);
         stage.setTitle("Minimax Checkers");
         stage.setResizable(false);

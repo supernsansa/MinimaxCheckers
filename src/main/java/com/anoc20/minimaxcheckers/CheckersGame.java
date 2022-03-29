@@ -2,9 +2,7 @@ package com.anoc20.minimaxcheckers;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Stack;
 
-//TODO Implement AI multicap
 //TODO Implement AI multicap
 //Outlines a "match" object that represents a match of checkers
 public class CheckersGame {
@@ -342,11 +340,9 @@ public class CheckersGame {
         CheckerTile destinationTile = getPlayingBoard().getTileByIndex(move.getIndexDest());
 
         if (move.getMoveType() == MoveType.MOVEMENT) {
-            //System.out.println("Movement unmade");
             movesReversed++;
             movePiece(destinationTile.getX(), destinationTile.getY(), originTile.getX(), originTile.getY(),false);
         } else if (move.getMoveType() == MoveType.CAPTURE) {
-            //System.out.println("Capture unmade");
             movesReversed++;
             CheckerPiece restoredPiece = null;
             for(CheckerPiece removedPiece : removedPieces) {
@@ -482,7 +478,6 @@ public class CheckersGame {
                 tempEval = minimaxABP(this, 8, -1000, 1000, maximise, move);
             }
 
-            //TODO if evaluations are equal, pick one randomly
             System.out.println(tempEval);
             //System.out.println(tempEval);
             if (playerColour == PieceColour.DARK) {
@@ -548,29 +543,6 @@ public class CheckersGame {
                moves = state.availableMoves(PieceColour.WHITE);
            }
 
-           /**
-           if(state.playerTurn) {
-               moves = state.availableCaptures(state.getPlayerColour());
-               if(moves.size() == 0) {
-                   moves = state.availableMoves(state.getPlayerColour());
-               }
-           }
-           else {
-               if(state.playerColour == PieceColour.WHITE) {
-                   moves = state.availableCaptures(PieceColour.DARK);
-                   if(moves.size() == 0) {
-                       moves = state.availableMoves(PieceColour.DARK);
-                   }
-               }
-               else {
-                   moves = state.availableCaptures(PieceColour.WHITE);
-                   if(moves.size() == 0) {
-                       moves = state.availableMoves(PieceColour.WHITE);
-                   }
-               }
-           }
-            */
-
            for(Move move : moves) {
                if(move.getMoveType() != MoveType.FORFEIT) {
                    //state.executeMove(move,false);
@@ -593,29 +565,6 @@ public class CheckersGame {
            if(moves.size() == 0) {
                moves = state.availableMoves(PieceColour.DARK);
            }
-
-           /**
-           if(state.playerTurn) {
-               moves = state.availableCaptures(state.getPlayerColour());
-               if(moves.size() == 0) {
-                   moves = state.availableMoves(state.getPlayerColour());
-               }
-           }
-           else {
-               if(state.playerColour == PieceColour.WHITE) {
-                   moves = state.availableCaptures(PieceColour.DARK);
-                   if(moves.size() == 0) {
-                       moves = state.availableMoves(PieceColour.DARK);
-                   }
-               }
-               else {
-                   moves = state.availableCaptures(PieceColour.WHITE);
-                   if(moves.size() == 0) {
-                       moves = state.availableMoves(PieceColour.WHITE);
-                   }
-               }
-           }
-            */
 
            for(Move move : moves) {
                if(move.getMoveType() != MoveType.FORFEIT) {
