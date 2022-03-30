@@ -2,6 +2,7 @@ package com.anoc20.minimaxcheckers;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 //TODO Implement AI multicap
 //Outlines a "match" object that represents a match of checkers
@@ -18,6 +19,8 @@ public class CheckersGame {
     private boolean maximise;
     private ArrayList<CheckerPiece> removedPieces;
     private ArrayList<CheckerPiece> kings;
+    public static Move lastMadeAIMove;
+    private Double currentEval;
 
     //Debug
     int movesExecuted = 0;
@@ -71,6 +74,7 @@ public class CheckersGame {
                 }
             }
             movesMade++;
+            multiCap = false;
         }
     }
 
@@ -440,7 +444,7 @@ public class CheckersGame {
 
         //System.out.println((possibleMoves.get(randomIndex)));
         executeMove(possibleMoves.get(randomIndex),true);
-        takeTurn();
+        //takeTurn();
     }
 
     //For medium and hard mode, have the AI pick the best move as determined by the Minimax algorithm with Alpha Beta pruning
@@ -504,7 +508,88 @@ public class CheckersGame {
         System.out.println("Minimax moves unmade: " + movesReversed);
 
         executeMove(bestMove,true);
-        takeTurn();
+        lastMadeAIMove = bestMove;
+        currentEval = eval;
+        //takeTurn();
+    }
+
+    //This method handles multi-leg captures for the AI (medium and hard modes only)
+    public void aiMulticapMove() {
+        movesExecuted = 0;
+        movesReversed = 0;
+        ArrayList<Move> possibleMoves;
+        double eval;
+        //If player is white, ai is dark
+        if (playerColour == PieceColour.WHITE) {
+            maximise = false;
+            possibleMoves = getCapturesByIndex(PieceColour.DARK, lastMadeAIMove.getIndexDest());
+            eval = 1000;
+            //Otherwise, if player is dark, ai must be white
+        } else {
+            maximise = true;
+            possibleMoves = getCapturesByIndex(PieceColour.WHITE, lastMadeAIMove.getIndexDest());
+            eval = -1000;
+        }
+
+        //If no captures are available, end the method early
+        if(possibleMoves.size() == 0) {
+            multiCap = false;
+            return;
+        }
+
+        Move bestMove = null;
+        for(Move move : possibleMoves) {
+            //Change depth based on chosen difficulty
+            double tempEval = 0;
+            if(difficulty == Mode.MEDIUM) {
+                tempEval = minimaxABP(this, 4, -1000, 1000, maximise, move);
+            }
+            else {
+                tempEval = minimaxABP(this, 8, -1000, 1000, maximise, move);
+            }
+            System.out.println(tempEval);
+            if (playerColour == PieceColour.DARK) {
+                System.out.println(tempEval + " > " + eval);
+                if(tempEval >= eval) {
+                    eval = tempEval;
+                    bestMove = move;
+                }
+            }
+            else {
+                System.out.println(tempEval + " < " + eval);
+                if(tempEval <= eval) {
+                    eval = tempEval;
+                    bestMove = move;
+                }
+            }
+        }
+
+        System.out.println("Possible Moves:");
+        System.out.println(possibleMoves);
+        System.out.println(eval);
+        System.out.println(bestMove.toString());
+        System.out.println("Minimax moves made: " + movesExecuted);
+        System.out.println("Minimax moves unmade: " + movesReversed);
+
+        //If making the capture is better than not making any move, execute the capture
+        if (playerColour == PieceColour.DARK) {
+            System.out.println(eval + " > " + currentEval);
+            if(eval >= currentEval) {
+                executeMove(bestMove,true);
+                System.out.println("AI MULTICAPTURE MADE!!!!");
+                lastMadeAIMove = bestMove;
+                currentEval = eval;
+            }
+        }
+        else {
+            System.out.println(eval + " < " + currentEval);
+            if(eval <= currentEval) {
+                executeMove(bestMove,true);
+                System.out.println("AI MULTICAPTURE MADE!!!!");
+                lastMadeAIMove = bestMove;
+                currentEval = eval;
+            }
+        }
     }
 
     //This method calculates the number of white pieces minus the number of dark pieces

@@ -60,6 +60,7 @@ public class GameController {
         if (checkersGame.isPlayerTurn() == false) {
             //First move is always random
             checkersGame.easyAIMove();
+            checkersGame.takeTurn();
             multiLegIndex = 0;
             updatePieceLocations();
         }
@@ -453,6 +454,14 @@ public class GameController {
             updatePieceLocations();
             playerStuckCheck();
             victoryCheck();
+            //Check if AI can capture another piece
+            while(checkersGame.isMultiCap() == true) {
+                checkersGame.aiMulticapMove();
+                updatePieceLocations();
+                playerStuckCheck();
+                victoryCheck();
+            }
+            checkersGame.takeTurn();
         }
         else if (checkersGame.isPlayerTurn() && checkersGame.getMovesMade() == 0){
             if(playerStuckCheck()) {
