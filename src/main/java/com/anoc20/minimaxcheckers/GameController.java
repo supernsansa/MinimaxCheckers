@@ -455,7 +455,7 @@ public class GameController {
             playerStuckCheck();
             victoryCheck();
             //Check if AI can capture another piece
-            while(checkersGame.isMultiCap() == true) {
+            while(checkersGame.isMultiCap() == true && checkersGame.getDifficulty() != Mode.EASY) {
                 checkersGame.aiMulticapMove();
                 updatePieceLocations();
                 playerStuckCheck();

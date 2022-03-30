@@ -106,6 +106,7 @@ public class CheckerBoard {
         return null;
     }
 
+    //Debug
     //Prints a text representation of the checkerboard where each black tile is represented by and index from 1 to 32, 0 represents white
     public void printBoardTiles() {
         for (int y = 0; y < board.length; y++) {
@@ -120,6 +121,7 @@ public class CheckerBoard {
         }
     }
 
+    //Debug
     //Prints a text representation of the checkerboard where true = dark piece and false = white piece
     public void printBoardPieces() {
         for (int y = 0; y < board.length; y++) {
@@ -140,14 +142,6 @@ public class CheckerBoard {
             }
             System.out.println();
         }
-    }
-
-    public static void main(String[] args) {
-        CheckerBoard testBoard = new CheckerBoard();
-        testBoard.printBoardTiles();
-        System.out.println(" ");
-        testBoard.placeStartingPieces();
-        testBoard.printBoardPieces();
     }
 
 }
