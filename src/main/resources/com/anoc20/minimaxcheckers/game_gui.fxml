@@ -61,12 +61,12 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Rules">
                <items>
-                  <MenuItem fx:id="rulesMenu" mnemonicParsing="false" text="Display" />
+                  <MenuItem fx:id="rulesMenu" mnemonicParsing="false" onAction="#displayHelp" text="Open" />
                </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Hints">
                <items>
-                  <MenuItem fx:id="hintMenu" mnemonicParsing="false" text="Toggle" />
+                  <MenuItem fx:id="hintMenu" mnemonicParsing="false" onAction="#displayHintOutlines" text="View" />
                </items>
           </Menu>
         </menus>

@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 //TODO Toggleable available move outlines
-//TODO Make a rules pop-up window
 public class GameController {
 
     private CheckersGame checkersGame;
@@ -66,6 +65,7 @@ public class GameController {
         }
     }
 
+    //This method handles drawing the board for the first time. Subsequent refreshes are handled by updatePieceLocations()
     @FXML
     private void drawBoard(CheckerBoard board) {
         boardPane.setStyle("-fx-padding: 0;" +
@@ -214,6 +214,53 @@ public class GameController {
         }
     }
 
+    //This method handles moving to the new game menu.
+    @FXML
+    private void newGameStart() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("new_game.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 800, 700);
+        Stage newStage = (Stage) boardPane.getScene().getWindow();
+        newStage.setScene(scene);
+    }
+
+    //This method handles opening the rules of checkers menu
+    @FXML
+    private void displayHelp() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("game_rules.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 800, 700);
+        Stage helpStage = new Stage();
+        helpStage.setScene(scene);
+        helpStage.show();
+    }
+
+    //This method handles drawing outlines around pieces which can make a legal move
+    @FXML
+    private void displayHintOutlines() {
+        //Disable hint outlines
+        if(GameApplication.hintsEnabled) {
+            GameApplication.hintsEnabled = false;
+            selectedTile = null;
+            clearTileBorders();
+        }
+        //Enable hint outlines
+        else {
+            GameApplication.hintsEnabled = true;
+            //Clear any existing borders
+            selectedTile = null;
+            clearTileBorders();
+            //Place borders around tiles with available moves
+            ArrayList<Move> moves = checkersGame.availableCaptures(GameApplication.playerColour);
+            if(moves.size() == 0) {
+                moves = checkersGame.availableMoves(GameApplication.playerColour);
+            }
+            for(Move move : moves) {
+                int[] coords = checkersGame.getPlayingBoard().getTileCoordsByIndex(move.getIndexOrigin());
+                tileShapes[coords[0]][coords[1]].setStroke(Color.GOLD);
+                tileShapes[coords[0]][coords[1]].setStrokeWidth(5);
+            }
+        }
+    }
+
     //This method handles all game actions involving the user clicking on the checkers board
     public void clickOnGrid(javafx.scene.input.MouseEvent event) {
         Node clickedNode = event.getPickResult().getIntersectedNode();
@@ -228,11 +275,13 @@ public class GameController {
                 //If no tile is selected
                 if (selectedTile == null && checkersGame.getPlayingBoard().getBoard()[colIndex][rowIndex].getActivePiece().getPieceColour() == checkersGame.getPlayerColour()
                         && checkersGame.isPlayerTurn() == true) {
+                    clearTileBorders();
+                    GameApplication.hintsEnabled = false;
                     //The clicked tile becomes the selected tile (provided that it currently holds one of the player's pieces)
                     selectedTile = checkersGame.getPlayingBoard().getBoard()[colIndex][rowIndex];
                     //If it is the player's turn and they click on a tile containing one of their pieces, highlight the tile and the available tiles it can move to
                     System.out.println("Selected Tile: " + selectedTile.getIndex());
-                    //Give selected tile a gold border
+                    //Give selected tile a green border
                     tileShapes[colIndex][rowIndex].setStroke(Color.LIME);
                     tileShapes[colIndex][rowIndex].setStrokeWidth(5.0);
                     ArrayList<Move> moves = checkersGame.availableCaptures(checkersGame.getPlayerColour());
@@ -292,6 +341,7 @@ public class GameController {
                                     multiLegIndex = move.getIndexDest();
                                 }
                                 clearTileBorders();
+                                GameApplication.hintsEnabled = false;
                                 updatePieceLocations();
                                 selectedTile = null;
                                 moveFound = true;
@@ -313,6 +363,7 @@ public class GameController {
                             }
                             alert.show();
                             selectedTile = null;
+                            GameApplication.hintsEnabled = false;
                             clearTileBorders();
                         }
                     }
@@ -335,6 +386,7 @@ public class GameController {
                                     multiLegIndex = move.getIndexDest();
                                 }
                                 clearTileBorders();
+                                GameApplication.hintsEnabled = false;
                                 updatePieceLocations();
                                 selectedTile = null;
                                 moveFound = true;
@@ -351,6 +403,7 @@ public class GameController {
                             alert.show();
                             selectedTile = null;
                             clearTileBorders();
+                            GameApplication.hintsEnabled = false;
                         }
                     }
                     //Otherwise, there is no move they can possibly make, tell user to finish their turn
@@ -363,6 +416,7 @@ public class GameController {
                         alert.show();
                         selectedTile = null;
                         clearTileBorders();
+                        GameApplication.hintsEnabled = false;
                     }
 
                     //Check if the player won
@@ -376,6 +430,7 @@ public class GameController {
         }
     }
 
+    //Remvoves borders from tiles
     @FXML
     private void clearTileBorders() {
         for (int y = 0; y < 8; y++) {
@@ -385,9 +440,12 @@ public class GameController {
         }
     }
 
+    //Handles pressing the Take Turn button
     @FXML
     public void takeTurn() throws InterruptedException, IOException {
         if (checkersGame.isPlayerTurn() && checkersGame.getMovesMade() != 0) {
+            clearTileBorders();
+            GameApplication.hintsEnabled = false;
             checkersGame.takeTurn();
             multiLegIndex = 0;
             //checkersGame.easyAIMove();
@@ -398,6 +456,8 @@ public class GameController {
         }
         else if (checkersGame.isPlayerTurn() && checkersGame.getMovesMade() == 0){
             if(playerStuckCheck()) {
+                clearTileBorders();
+                GameApplication.hintsEnabled = false;
                 return;
             }
             else {
@@ -407,6 +467,7 @@ public class GameController {
                 alert.show();
                 selectedTile = null;
                 clearTileBorders();
+                GameApplication.hintsEnabled = false;
             }
         }
     }
@@ -448,13 +509,5 @@ public class GameController {
             return true;
         }
         return false;
-    }
-
-    @FXML
-    private void newGameStart() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("new_game.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 700);
-        Stage newStage = (Stage) boardPane.getScene().getWindow();
-        newStage.setScene(scene);
     }
 }

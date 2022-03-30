@@ -10,7 +10,7 @@ import java.io.IOException;
 public class GameApplication extends Application {
     public static Mode difficulty = Mode.HARD;
     public static PieceColour playerColour = PieceColour.DARK;
-    public static boolean hintsEnabled = true;
+    public static boolean hintsEnabled = false;
 
     @Override
     public void start(Stage stage) throws IOException {

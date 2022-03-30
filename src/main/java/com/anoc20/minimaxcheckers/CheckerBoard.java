@@ -93,6 +93,19 @@ public class CheckerBoard {
         return null;
     }
 
+    //Returns coordinates of a tile given its index
+    public int[] getTileCoordsByIndex(int index) {
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                if(board[x][y].getIndex() == index) {
+                    int[] returnValues = {x,y};
+                    return returnValues;
+                }
+            }
+        }
+        return null;
+    }
+
     //Prints a text representation of the checkerboard where each black tile is represented by and index from 1 to 32, 0 represents white
     public void printBoardTiles() {
         for (int y = 0; y < board.length; y++) {
