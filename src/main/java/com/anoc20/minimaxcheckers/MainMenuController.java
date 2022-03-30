@@ -35,13 +35,15 @@ public class MainMenuController {
         newStage.setScene(scene);
     }
 
-    //TODO Display help pop up window with rules of checkers
+    //Opens the rules of checkers in a seperate window
     @FXML
     private void displayHelp() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("new_game.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("game_rules.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 700);
-        Stage newStage = (Stage) newGameButton.getScene().getWindow();
-        newStage.setScene(scene);
+        Stage helpStage = new Stage();
+        helpStage.setTitle("Minimax Checkers");
+        helpStage.setScene(scene);
+        helpStage.show();
     }
 
 }

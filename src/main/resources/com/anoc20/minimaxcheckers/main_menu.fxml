@@ -22,7 +22,7 @@
             <Font name="Arial" size="36.0" />
          </font>
       </Button>
-      <Button fx:id="rulesButton" layoutX="317.0" layoutY="380.0" mnemonicParsing="false" text="How to Play">
+      <Button fx:id="rulesButton" layoutX="317.0" layoutY="380.0" mnemonicParsing="false" onAction="#displayHelp" text="How to Play">
          <font>
             <Font name="Arial" size="24.0" />
          </font>

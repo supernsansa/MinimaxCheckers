@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.anoc20.minimaxcheckers.GameRulesController">
+   <children>
+      <Text layoutX="216.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rules of Checkers" underline="true">
+         <font>
+            <Font name="Courier New Bold" size="36.0" />
+         </font>
+      </Text>
+      <Group layoutX="21.0" layoutY="124.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1) Red moves first." wrappingWidth="386.249267578125">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Text>
+            <Text layoutY="30.294921875" strokeType="OUTSIDE" strokeWidth="0.0" text="2) Regular checker pieces can only move forwards." wrappingWidth="386.249267578125">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Text>
+            <Text layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3) Checker pieces can only move diagonally." wrappingWidth="386.249267578125">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Text>
+            <Text layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4) Players can capture an opposing checker piece by 'jumping' over them with their own piece. This can only happen if the diagonal behind the opposing piece is empty." wrappingWidth="386.249267578125">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Text>
+            <Text layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="5) Forced Capture: If one of your pieces is in a position where they can take an opposing piece, you must do so. If two or more of your pieces are in a position where they can make a capture, you must pick one of them to do so." wrappingWidth="386.249267578125">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Text>
+            <Text layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="6) After a capture, if your piece lands on a tile where they are able to take another piece, the player can make an additional capture if they choose to do so." wrappingWidth="386.249267578125">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Text>
+            <Text layoutY="409.0" strokeType="OUTSIDE" strokeWidth="0.0" text="7) If one of your regular pieces reaches your opponent's end of the board, that piece becomes a king." wrappingWidth="386.249267578125">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Text>
+            <Text layoutY="485.0" strokeType="OUTSIDE" strokeWidth="0.0" text="8) Regicide: If one of your regular pieces captures an opponent's king, that piece becomes a king." wrappingWidth="386.249267578125">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Text>
+         </children>
+      </Group>
+      <Text layoutX="417.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="9) King pieces can move forward and backward." wrappingWidth="354.058837890625">
+         <font>
+            <Font name="Arial" size="18.0" />
+         </font>
+      </Text>
+      <Group layoutX="494.0" layoutY="186.0">
+         <children>
+            <Text layoutX="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="King Pieces:" wrappingWidth="114.05889892578125">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Text>
+            <HBox layoutY="19.0">
+               <children>
+                  <ImageView fitHeight="87.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@RedKing.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="87.0" fitWidth="87.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@WhiteKing.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+         </children>
+      </Group>
+      <ImageView fitHeight="300.0" fitWidth="400.0" layoutX="400.0" layoutY="371.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@CheckersGameplay.gif" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

@@ -64,9 +64,9 @@
                   <MenuItem fx:id="rulesMenu" mnemonicParsing="false" text="Display" />
                </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Hint">
+          <Menu mnemonicParsing="false" text="Hints">
                <items>
-                  <MenuItem fx:id="hintMenu" mnemonicParsing="false" text="Enable" />
+                  <MenuItem fx:id="hintMenu" mnemonicParsing="false" text="Toggle" />
                </items>
           </Menu>
         </menus>
