@@ -1,5 +1,6 @@
 package com.anoc20.minimaxcheckers;
 
+//Class defining Move objects.
 public class Move {
     private MoveType moveType;
     private int indexOrigin, indexDest, indexCapture, capturedPieceID;

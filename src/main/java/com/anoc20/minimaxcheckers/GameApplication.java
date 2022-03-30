@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class GameApplication extends Application {
+    //Default params
     public static Mode difficulty = Mode.HARD;
     public static PieceColour playerColour = PieceColour.DARK;
     public static boolean hintsEnabled = false;

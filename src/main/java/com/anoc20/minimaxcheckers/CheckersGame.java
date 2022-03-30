@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-//TODO Implement AI multicap
 //Outlines a "match" object that represents a match of checkers
 public class CheckersGame {
 
@@ -319,15 +318,13 @@ public class CheckersGame {
         CheckerTile destinationTile = getPlayingBoard().getTileByIndex(move.getIndexDest());
 
         if (move.getMoveType() == MoveType.MOVEMENT) {
-            //System.out.println("Movement made");
             movesExecuted++;
             movePiece(originTile.getX(), originTile.getY(), destinationTile.getX(), destinationTile.getY(),permanent);
         } else if (move.getMoveType() == MoveType.CAPTURE) {
-            //System.out.println("Capture made");
             movesExecuted++;
             capturePiece(move.getIndexOrigin(), move.getIndexDest(), move.getIndexCapture(),permanent);
+            //Only occurs if player or AI is unable to make any legal moves, thereby losing the game
         } else if (move.getMoveType() == MoveType.FORFEIT) {
-            System.out.println("No moves possible, forfeiting game");
             finished = true;
             if(playerTurn) {
                 victor = PlayerType.BOT;
@@ -438,13 +435,9 @@ public class CheckersGame {
         }
 
         Random random = new Random();
-        //System.out.println(possibleMoves);
-        //System.out.println(possibleMoves.size());
         int randomIndex = random.nextInt(possibleMoves.size());
 
-        //System.out.println((possibleMoves.get(randomIndex)));
         executeMove(possibleMoves.get(randomIndex),true);
-        //takeTurn();
     }
 
     //For medium and hard mode, have the AI pick the best move as determined by the Minimax algorithm with Alpha Beta pruning
@@ -482,17 +475,13 @@ public class CheckersGame {
                 tempEval = minimaxABP(this, 8, -1000, 1000, maximise, move);
             }
 
-            System.out.println(tempEval);
-            //System.out.println(tempEval);
             if (playerColour == PieceColour.DARK) {
-                System.out.println(tempEval + " > " + eval);
                 if(tempEval >= eval) {
                     eval = tempEval;
                     bestMove = move;
                 }
             }
             else {
-                System.out.println(tempEval + " < " + eval);
                 if(tempEval <= eval) {
                     eval = tempEval;
                     bestMove = move;
@@ -500,17 +489,9 @@ public class CheckersGame {
             }
         }
 
-        System.out.println("Possible Moves:");
-        System.out.println(possibleMoves);
-        System.out.println(eval);
-        System.out.println(bestMove.toString());
-        System.out.println("Minimax moves made: " + movesExecuted);
-        System.out.println("Minimax moves unmade: " + movesReversed);
-
         executeMove(bestMove,true);
         lastMadeAIMove = bestMove;
         currentEval = eval;
-        //takeTurn();
     }
 
     //This method handles multi-leg captures for the AI (medium and hard modes only)
@@ -547,16 +528,13 @@ public class CheckersGame {
             else {
                 tempEval = minimaxABP(this, 8, -1000, 1000, maximise, move);
             }
-            System.out.println(tempEval);
             if (playerColour == PieceColour.DARK) {
-                System.out.println(tempEval + " > " + eval);
                 if(tempEval >= eval) {
                     eval = tempEval;
                     bestMove = move;
                 }
             }
             else {
-                System.out.println(tempEval + " < " + eval);
                 if(tempEval <= eval) {
                     eval = tempEval;
                     bestMove = move;
@@ -564,28 +542,17 @@ public class CheckersGame {
             }
         }
 
-        System.out.println("Possible Moves:");
-        System.out.println(possibleMoves);
-        System.out.println(eval);
-        System.out.println(bestMove.toString());
-        System.out.println("Minimax moves made: " + movesExecuted);
-        System.out.println("Minimax moves unmade: " + movesReversed);
-
         //If making the capture is better than not making any move, execute the capture
         if (playerColour == PieceColour.DARK) {
-            System.out.println(eval + " > " + currentEval);
             if(eval >= currentEval) {
                 executeMove(bestMove,true);
-                System.out.println("AI MULTICAPTURE MADE!!!!");
                 lastMadeAIMove = bestMove;
                 currentEval = eval;
             }
         }
         else {
-            System.out.println(eval + " < " + currentEval);
             if(eval <= currentEval) {
                 executeMove(bestMove,true);
-                System.out.println("AI MULTICAPTURE MADE!!!!");
                 lastMadeAIMove = bestMove;
                 currentEval = eval;
             }
@@ -630,7 +597,6 @@ public class CheckersGame {
 
            for(Move move : moves) {
                if(move.getMoveType() != MoveType.FORFEIT) {
-                   //state.executeMove(move,false);
                    double eval = minimaxABP(state, depth-1, alpha, beta, false, move);
                    maxEvaluation = Math.max(maxEvaluation,eval);
                    alpha = Math.max(alpha, eval);
@@ -667,11 +633,24 @@ public class CheckersGame {
        }
     }
 
+    //Checks if the game has ended
     public boolean gameEnded() {
         if(pieceCount(PieceColour.WHITE) == 0) {
+            if(playerColour == PieceColour.WHITE) {
+                victor = PlayerType.BOT;
+            }
+            else {
+                victor = PlayerType.HUMAN;
+            }
             return true;
         }
         else if(pieceCount(PieceColour.DARK) == 0) {
+            if(playerColour == PieceColour.DARK) {
+                victor = PlayerType.BOT;
+            }
+            else {
+                victor = PlayerType.HUMAN;
+            }
             return true;
         }
         return false;

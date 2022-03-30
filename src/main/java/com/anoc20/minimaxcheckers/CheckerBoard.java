@@ -32,10 +32,10 @@ public class CheckerBoard {
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE, board[x][y].getIndex(),id));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE, board[x][y].getIndex(), id));
                     id++;
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE, board[x][y].getIndex(),id));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.WHITE, board[x][y].getIndex(), id));
                     id++;
                 } else {
                     continue;
@@ -46,10 +46,10 @@ public class CheckerBoard {
         for (int y = 5; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 if ((x % 2 != 0) && (y % 2 == 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK, board[x][y].getIndex(),id));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK, board[x][y].getIndex(), id));
                     id++;
                 } else if ((x % 2 == 0) && (y % 2 != 0)) {
-                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK, board[x][y].getIndex(),id));
+                    board[x][y].setActivePiece(new CheckerPiece(PieceColour.DARK, board[x][y].getIndex(), id));
                     id++;
                 } else {
                     continue;
@@ -85,7 +85,7 @@ public class CheckerBoard {
     public CheckerTile getTileByIndex(int index) {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
-                if(board[x][y].getIndex() == index) {
+                if (board[x][y].getIndex() == index) {
                     return board[x][y];
                 }
             }
@@ -97,8 +97,8 @@ public class CheckerBoard {
     public int[] getTileCoordsByIndex(int index) {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
-                if(board[x][y].getIndex() == index) {
-                    int[] returnValues = {x,y};
+                if (board[x][y].getIndex() == index) {
+                    int[] returnValues = {x, y};
                     return returnValues;
                 }
             }
@@ -113,8 +113,6 @@ public class CheckerBoard {
             for (int x = 0; x < board.length; x++) {
                 if (board[x][y] != null) {
                     System.out.print(board[x][y].getIndex() + " ");
-                } else {
-                    //System.out.print("- ");
                 }
             }
             System.out.println();
@@ -136,8 +134,6 @@ public class CheckerBoard {
                     } else {
                         System.out.print("- ");
                     }
-                } else {
-                    //System.out.print("- ");
                 }
             }
             System.out.println();

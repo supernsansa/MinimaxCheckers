@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-//TODO Toggleable available move outlines
 public class GameController {
 
     private CheckersGame checkersGame;
@@ -270,7 +269,6 @@ public class GameController {
             //Get the column and row index of what part of the board was clicked
             Integer colIndex = GridPane.getColumnIndex(clickedNode);
             Integer rowIndex = GridPane.getRowIndex(clickedNode);
-            System.out.println("Clicked Cell: X = " + colIndex + ", Y = " + rowIndex);
 
             try {
                 //If no tile is selected
@@ -280,8 +278,8 @@ public class GameController {
                     GameApplication.hintsEnabled = false;
                     //The clicked tile becomes the selected tile (provided that it currently holds one of the player's pieces)
                     selectedTile = checkersGame.getPlayingBoard().getBoard()[colIndex][rowIndex];
-                    //If it is the player's turn and they click on a tile containing one of their pieces, highlight the tile and the available tiles it can move to
-                    System.out.println("Selected Tile: " + selectedTile.getIndex());
+                    /**If it is the player's turn, and they click on a tile containing one of their pieces,
+                    highlight the tile and the available tiles it can move to. */
                     //Give selected tile a green border
                     tileShapes[colIndex][rowIndex].setStroke(Color.LIME);
                     tileShapes[colIndex][rowIndex].setStrokeWidth(5.0);
@@ -314,8 +312,6 @@ public class GameController {
                 }
                 //Otherwise, assume the user is attempting to make a move
                 else {
-                    System.out.println("Attempting a move");
-
                     //If user has not made any moves yet
                     if (checkersGame.getMovesMade() == 0) {
                         //First check if there are any captures the user needs to make
@@ -334,7 +330,6 @@ public class GameController {
                         //Find corresponding move
                         for (Move move : moves) {
                             if (move.getIndexOrigin() == selectedTile.getIndex() && move.getIndexDest() == destinationIndex) {
-                                System.out.println("Move found");
                                 //Get and execute move
                                 checkersGame.executeMove(move, true);
                                 //If it was a capture, save the new index of the capturing piece (needed for multi-leg capture moves)
@@ -351,8 +346,6 @@ public class GameController {
                         }
                         //If no valid move is found
                         if (moveFound == false) {
-                            System.out.println("No valid move found");
-
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             if(forcedCapture) {
                                 alert.setTitle("Invalid Move");
@@ -379,7 +372,6 @@ public class GameController {
                         //Find corresponding move
                         for (Move move : multiLegCaps) {
                             if (move.getIndexOrigin() == selectedTile.getIndex() && move.getIndexDest() == destinationIndex) {
-                                System.out.println("Move found");
                                 //Get and execute move
                                 checkersGame.executeMove(move, true);
                                 //If it was a capture, save the new index of the capturing piece (needed for multi-leg capture moves)
@@ -396,8 +388,6 @@ public class GameController {
                         }
                         //If no valid move is found
                         if (moveFound == false) {
-                            System.out.println("No valid move found");
-
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setTitle("Invalid Move");
                             alert.setContentText("You have attempted an invalid move. Either make a multi-leg capture or take your turn.");
@@ -409,8 +399,6 @@ public class GameController {
                     }
                     //Otherwise, there is no move they can possibly make, tell user to finish their turn
                     else {
-                        System.out.println("User has no more moves left this turn");
-
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("No Moves Left");
                         alert.setContentText("You have made all the moves you can possibly make this turn.");
@@ -462,6 +450,7 @@ public class GameController {
                 victoryCheck();
             }
             checkersGame.takeTurn();
+            victoryCheck();
         }
         else if (checkersGame.isPlayerTurn() && checkersGame.getMovesMade() == 0){
             if(playerStuckCheck()) {
@@ -484,15 +473,13 @@ public class GameController {
     @FXML
     private void victoryCheck() throws IOException {
         //Check if someone has won. Display a fitting  alert if so
-        if (checkersGame.isFinished()) {
+        if (checkersGame.gameEnded() || checkersGame.isFinished()) {
             ButtonType rematch = new ButtonType("New Game");
             ButtonType close = new ButtonType("Exit");
             Alert alert = new Alert(Alert.AlertType.NONE, "End of Game", rematch, close);
             if (checkersGame.getVictor() == PlayerType.HUMAN) {
-                System.out.println("You Won!");
                 alert.setContentText("You won this match.");
             } else {
-                System.out.println("You Lost");
                 alert.setContentText("The AI won, better luck next time.");
             }
             Optional<ButtonType> option = alert.showAndWait();
@@ -501,6 +488,7 @@ public class GameController {
                 Platform.exit();
             }
             else if(option.isPresent() && option.get() == rematch) {
+                alert.close();
                 FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("new_game.fxml"));
                 Scene scene = new Scene(fxmlLoader.load(), 800, 700);
                 Stage newStage = (Stage) boardPane.getScene().getWindow();
@@ -510,10 +498,8 @@ public class GameController {
     }
 
     private boolean playerStuckCheck() {
-        System.out.println(checkersGame.availableMoves(checkersGame.getPlayerColour()));
         Move move = checkersGame.availableMoves(checkersGame.getPlayerColour()).get(0);
         if (move.getMoveType() == MoveType.FORFEIT) {
-            System.out.println("Player cannot make a legal move");
             checkersGame.executeMove(move, true);
             return true;
         }
